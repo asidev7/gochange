@@ -10,10 +10,12 @@ After=network.target
 User=www-data
 Group=www-data
 WorkingDirectory=/var/www/gochange
+# Socket Unix dans /run/gochange (créé par systemd), évite tout conflit de port
+RuntimeDirectory=gochange
 # settings.py charge le .env via python-dotenv (pas besoin d'EnvironmentFile)
 ExecStart=/var/www/gochange/venv/bin/gunicorn \
     --workers 3 \
-    --bind 127.0.0.1:8000 \
+    --bind unix:/run/gochange/gochange.sock \
     --access-logfile - \
     --error-logfile - \
     config.wsgi:application

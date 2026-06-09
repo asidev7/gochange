@@ -56,7 +56,7 @@ systemctl enable --now gochange
 echo ">> Nginx"
 cp deploy/nginx-gochange.conf /etc/nginx/sites-available/gochange
 ln -sf /etc/nginx/sites-available/gochange /etc/nginx/sites-enabled/gochange
-rm -f /etc/nginx/sites-enabled/default
+# Note : on ne supprime AUCUN autre site (serveur potentiellement multi-sites).
 nginx -t && systemctl reload nginx
 
 echo ">> HTTPS (Let's Encrypt)"
