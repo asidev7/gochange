@@ -1,0 +1,34 @@
+{% extends "account/_auth_base.html" %}
+
+{% block content %}
+<section class="relative overflow-hidden bg-gradient-to-b from-soft to-white">
+  <div class="pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full bg-primary/10 blur-3xl"></div>
+  <div class="container-x flex min-h-screen items-center justify-center py-28">
+    <div class="w-full max-w-md rounded-3xl border border-gray-100 bg-white p-8 shadow-xl shadow-primary/5">
+      <h1 class="text-2xl font-extrabold tracking-tight">Bon retour 👋</h1>
+      <p class="mt-2 text-sm text-gray-secondary">Connectez-vous à votre espace GoChange.</p>
+
+      <form method="post" class="mt-6 space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+          <div>
+            <label class="mb-1.5 block text-sm font-medium" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}<p class="mt-1 text-sm text-red-600">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+        <div class="text-right">
+          <a href="{% url 'accounts:mot_de_passe_oublie' %}" class="text-sm text-primary hover:underline">Mot de passe oublié ?</a>
+        </div>
+        <button type="submit" class="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">
+          Se connecter
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-gray-secondary">
+        Pas encore de compte ? <a href="{% url 'accounts:inscription' %}" class="font-medium text-primary hover:underline">Créez-en un</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

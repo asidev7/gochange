@@ -1,0 +1,148 @@
+{% extends "app/_app_base.html" %}
+{% block title %}Bénéficiaires — GoChange{% endblock %}
+
+{% block app_content %}
+<h1 class="text-2xl font-bold tracking-tight">Bénéficiaires</h1>
+<p class="mt-1 text-sm text-gray-secondary">Vos comptes Mobile Money et bancaires enregistrés pour les retraits.</p>
+
+<!-- Liste -->
+<div class="mt-6 space-y-3">
+  {% for b in beneficiaires %}
+  <div class="flex items-center justify-between rounded-xl border border-gray-200 p-4">
+    <div class="flex items-center gap-3">
+      <span class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-soft text-xs font-bold {% if b.kind == 'bank' %}text-primary{% else %}text-green-600{% endif %}">
+        {% if b.kind == 'bank' %}NGN{% else %}XOF{% endif %}
+      </span>
+      <div>
+        <p class="text-sm font-semibold">{{ b }}</p>
+        {% if b.label %}<p class="text-xs text-gray-secondary">{{ b.label }}</p>{% endif %}
+      </div>
+    </div>
+    <form method="post" action="{% url 'exchange:beneficiaire_supprimer' b.pk %}" onsubmit="return confirm('Supprimer ce bénéficiaire ?');">
+      {% csrf_token %}
+      <button class="text-sm text-red-600 hover:underline">Supprimer</button>
+    </form>
+  </div>
+  {% empty %}
+  <p class="rounded-xl border border-dashed border-gray-300 p-6 text-center text-sm text-gray-secondary">
+    Aucun bénéficiaire pour l'instant. Ajoutez-en un ci-dessous.
+  </p>
+  {% endfor %}
+</div>
+
+<!-- Ajout -->
+<div class="mt-8 rounded-2xl border border-gray-200 p-6" x-data="{tab: 'momo'}">
+  <div class="flex gap-2 border-b border-gray-200">
+    <button @click="tab='momo'" :class="tab==='momo' ? 'border-primary text-primary' : 'border-transparent text-gray-secondary'" class="border-b-2 px-3 py-2 text-sm font-medium">Mobile Money (XOF)</button>
+    <button @click="tab='bank'" :class="tab==='bank' ? 'border-primary text-primary' : 'border-transparent text-gray-secondary'" class="border-b-2 px-3 py-2 text-sm font-medium">Compte bancaire (NGN)</button>
+  </div>
+
+  <!-- Mobile Money -->
+  <form method="post" x-show="tab==='momo'" class="mt-5 space-y-4">
+    {% csrf_token %}
+    <input type="hidden" name="kind" value="momo">
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Libellé (optionnel)</label>
+      {{ momo_form.label }}
+    </div>
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Opérateur</label>
+      {{ momo_form.operator }}
+    </div>
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Numéro</label>
+      {{ momo_form.phone }}
+      {% for e in momo_form.phone.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+    </div>
+    <button class="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark">Ajouter ce numéro</button>
+  </form>
+
+  <!-- Banque NGN avec résolution du nom -->
+  <form method="post" x-show="tab==='bank'" x-cloak class="mt-5 space-y-4"
+        x-data="bankResolver()">
+    {% csrf_token %}
+    <input type="hidden" name="kind" value="bank">
+    {{ bank_form.bank_code }}
+    {{ bank_form.bank_name }}
+    {{ bank_form.account_name }}
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Libellé (optionnel)</label>
+      {{ bank_form.label }}
+    </div>
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Banque</label>
+      <select x-model="bankCode" @change="setBankName()" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none">
+        <option value="">— Choisir une banque —</option>
+        {% for bank in banks %}<option value="{{ bank.code }}" data-name="{{ bank.name }}">{{ bank.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Numéro de compte (10 chiffres)</label>
+      <input type="text" maxlength="10" x-model="accountNumber" @input="reset()" name="bank-account_number"
+             class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none" placeholder="0123456789">
+      {% for e in bank_form.account_number.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+    </div>
+
+    <button type="button" @click="resolve()" :disabled="!canResolve() || loading"
+            class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold hover:border-gray-400 disabled:opacity-50">
+      <span x-show="!loading">Vérifier le compte</span>
+      <span x-show="loading" x-cloak>Vérification…</span>
+    </button>
+
+    <template x-if="resolvedName">
+      <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm">
+        <p class="text-green-800">Titulaire du compte : <span class="font-semibold" x-text="resolvedName"></span></p>
+        <label class="mt-2 flex items-center gap-2 text-green-800">
+          <input type="checkbox" x-model="confirmed" class="h-4 w-4 rounded border-gray-300 text-primary">
+          Je confirme qu'il s'agit du bon bénéficiaire.
+        </label>
+      </div>
+    </template>
+    <template x-if="error">
+      <p class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" x-text="error"></p>
+    </template>
+
+    <div>
+      <button type="submit" :disabled="!resolvedName || !confirmed"
+              class="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-50">
+        Enregistrer ce compte
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function bankResolver() {
+  return {
+    bankCode: '', bankName: '', accountNumber: '',
+    resolvedName: '', confirmed: false, error: '', loading: false,
+    setBankName() {
+      const opt = document.querySelector('option[value="'+this.bankCode+'"]');
+      this.bankName = opt ? opt.dataset.name : '';
+      this.syncHidden(); this.reset();
+    },
+    canResolve() { return this.bankCode && this.accountNumber.length === 10; },
+    reset() { this.resolvedName=''; this.confirmed=false; this.error=''; this.syncHidden(); },
+    syncHidden() {
+      this.$root.querySelector('[name="bank-bank_code"]').value = this.bankCode;
+      this.$root.querySelector('[name="bank-bank_name"]').value = this.bankName;
+      this.$root.querySelector('[name="bank-account_name"]').value = this.resolvedName;
+    },
+    async resolve() {
+      this.loading = true; this.error = ''; this.resolvedName = '';
+      try {
+        const url = '{% url "exchange:api_resoudre_compte" %}?account_number='+this.accountNumber+'&bank_code='+this.bankCode;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.ok) { this.resolvedName = data.account_name; }
+        else { this.error = data.message || 'Compte introuvable.'; }
+      } catch(e) { this.error = 'Erreur réseau, réessayez.'; }
+      this.loading = false; this.syncHidden();
+    }
+  }
+}
+</script>
+{% endblock %}

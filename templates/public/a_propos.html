@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="border-b border-gray-200">
+  <div class="container-x py-16 md:py-20">
+    <div class="max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight md:text-4xl">À propos de GoChange</h1>
+      <p class="mt-6 text-lg leading-relaxed text-gray-secondary">
+        GoChange est née d'un constat simple : entre le Bénin et le Nigeria, l'argent circule
+        en permanence, mais le changer reste compliqué. Files d'attente chez les cambistes,
+        taux improvisés, peur de se tromper de compte… Nous voulions une solution claire,
+        rapide et honnête.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-10 md:grid-cols-2">
+      <div>
+        <h2 class="text-xl font-bold tracking-tight">Notre mission</h2>
+        <p class="mt-4 text-sm leading-relaxed text-gray-secondary">
+          Permettre à un commerçant de Parakou de payer son fournisseur de Lagos, à un parent
+          d'Abuja d'envoyer de l'argent à son enfant étudiant à Cotonou, sans intermédiaire et
+          sans mauvaise surprise. Un taux affiché, des frais connus à l'avance, et le nom du
+          bénéficiaire toujours vérifié avant l'envoi.
+        </p>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold tracking-tight">Qui nous sommes</h2>
+        <p class="mt-4 text-sm leading-relaxed text-gray-secondary">
+          GoChange est éditée par <span class="font-semibold text-ink">ASITECH SOLUTION</span>,
+          une entreprise technologique basée à <span class="font-semibold text-ink">Parakou, au Bénin</span>.
+          Nous construisons des outils numériques pensés pour les réalités de notre région :
+          accessibles depuis un simple téléphone, en français comme en anglais, avec un support
+          humain joignable tous les jours.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-12 grid gap-6 sm:grid-cols-3">
+      <div class="rounded-xl border border-gray-200 p-6">
+        <p class="text-3xl font-bold text-primary">2</p>
+        <p class="mt-1 text-sm text-gray-secondary">pays connectés : Bénin & Nigeria</p>
+      </div>
+      <div class="rounded-xl border border-gray-200 p-6">
+        <p class="text-3xl font-bold text-primary">7j/7</p>
+        <p class="mt-1 text-sm text-gray-secondary">support humain sur WhatsApp</p>
+      </div>
+      <div class="rounded-xl border border-gray-200 p-6">
+        <p class="text-3xl font-bold text-primary">0</p>
+        <p class="mt-1 text-sm text-gray-secondary">frais caché, jamais</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container-x py-16">
+    <div class="rounded-2xl border border-gray-200 bg-soft p-8 text-center md:p-12">
+      <h2 class="text-2xl font-bold tracking-tight">Une question, un partenariat ?</h2>
+      <p class="mx-auto mt-3 max-w-xl text-sm text-gray-secondary">
+        Écrivez-nous à contact@gochange.store ou passez nous voir à Parakou.
+      </p>
+      <a href="{% url 'core:contact' %}" class="mt-6 inline-block rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-dark">
+        Nous contacter
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

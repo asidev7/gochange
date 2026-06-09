@@ -1,0 +1,53 @@
+{% extends "account/_auth_base.html" %}
+
+{% block content %}
+<section class="relative overflow-hidden bg-gradient-to-b from-soft to-white">
+  <div class="pointer-events-none absolute -right-24 top-0 h-80 w-80 rounded-full bg-accent/10 blur-3xl"></div>
+  <div class="container-x flex min-h-screen items-center justify-center py-28">
+    <div class="w-full max-w-md rounded-3xl border border-gray-100 bg-white p-8 shadow-xl shadow-primary/5">
+      <h1 class="text-2xl font-extrabold tracking-tight">Créer votre compte 🎉</h1>
+      <p class="mt-2 text-sm text-gray-secondary">C'est gratuit et ça prend deux minutes.</p>
+
+      <form method="post" class="mt-6 space-y-4">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="mb-1.5 block text-sm font-medium" for="{{ form.first_name.id_for_label }}">Prénom</label>
+            {{ form.first_name }}
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium" for="{{ form.last_name.id_for_label }}">Nom</label>
+            {{ form.last_name }}
+          </div>
+        </div>
+        {% for field in form %}
+          {% if field.name != 'first_name' and field.name != 'last_name' and field.name != 'accept' %}
+          <div>
+            <label class="mb-1.5 block text-sm font-medium" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}<p class="mt-1 text-sm text-red-600">{{ error }}</p>{% endfor %}
+          </div>
+          {% endif %}
+        {% endfor %}
+        <label class="flex items-start gap-2 text-sm text-gray-secondary">
+          {{ form.accept }}
+          <span>J'accepte les <a href="{% url 'core:cgu' %}" class="text-primary hover:underline">CGU</a>
+            et la <a href="{% url 'core:confidentialite' %}" class="text-primary hover:underline">politique de confidentialité</a>.</span>
+        </label>
+        {% for error in form.accept.errors %}<p class="text-sm text-red-600">{{ error }}</p>{% endfor %}
+
+        <button type="submit" class="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">
+          Créer mon compte
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-gray-secondary">
+        Déjà inscrit ? <a href="{% url 'accounts:connexion' %}" class="font-medium text-primary hover:underline">Connectez-vous</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

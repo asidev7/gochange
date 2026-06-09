@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="border-b border-gray-200">
+  <div class="container-x py-16 md:py-20">
+    <div class="mx-auto max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Politique de confidentialité</h1>
+      <p class="mt-4 text-sm text-gray-secondary">Dernière mise à jour : {% now "F Y" %}</p>
+
+      <div class="mt-10 max-w-none space-y-8 text-[15px] leading-relaxed text-gray-secondary">
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">1. Qui est responsable de vos données</h2>
+          <p class="mt-3">Les données collectées sur GoChange sont traitées par ASITECH SOLUTION, établie à Parakou (Bénin). Pour toute question relative à vos données, écrivez-nous à contact@gochange.store.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">2. Quelles données nous collectons</h2>
+          <ul class="mt-3 list-disc space-y-1 pl-6">
+            <li>Données d'identification : nom, prénom, adresse e-mail, numéro de téléphone, pays.</li>
+            <li>Données de vérification (KYC) : pièce d'identité, selfie, justificatif d'adresse ou registre de commerce, pour les niveaux 2 et 3.</li>
+            <li>Données de transaction : dépôts, échanges, retraits, bénéficiaires enregistrés, montants et dates.</li>
+            <li>Données techniques : adresse IP, journaux de connexion, afin de sécuriser votre compte.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">3. Pourquoi nous les utilisons</h2>
+          <p class="mt-3">Vos données servent à : créer et sécuriser votre compte, exécuter vos opérations de change, vérifier votre identité conformément à la réglementation, prévenir la fraude et le blanchiment, vous apporter un support, et vous informer (uniquement si vous l'acceptez) de nouveautés.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">4. Avec qui nous les partageons</h2>
+          <p class="mt-3">Nous partageons le strict nécessaire avec nos prestataires de paiement (PayDunya, Paystack) pour exécuter vos dépôts et retraits. Nous pouvons être amenés à communiquer des informations aux autorités compétentes en cas d'obligation légale. Nous ne vendons jamais vos données à des tiers à des fins publicitaires.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">5. Combien de temps nous les conservons</h2>
+          <p class="mt-3">Vos données de compte et de transaction sont conservées tant que votre compte est actif, puis pendant la durée imposée par les obligations légales et comptables (notamment en matière de lutte anti-blanchiment). Les documents KYC sont conservés de manière sécurisée et à accès restreint.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">6. Comment nous protégeons vos données</h2>
+          <p class="mt-3">Les échanges avec la Plateforme sont chiffrés (HTTPS). Les mots de passe ne sont jamais stockés en clair. L'accès aux documents d'identité est limité aux personnes habilitées à la vérification. La clé secrète de nos prestataires de paiement n'est jamais exposée à votre navigateur.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">7. Vos droits</h2>
+          <p class="mt-3">Vous pouvez à tout moment consulter et corriger vos informations depuis votre profil, demander une copie de vos données, ou demander la suppression de votre compte (sous réserve des obligations légales de conservation et que votre portefeuille soit vide). Pour exercer ces droits, contactez-nous à contact@gochange.store.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">8. Cookies</h2>
+          <p class="mt-3">Nous utilisons uniquement les cookies nécessaires au fonctionnement de la Plateforme (session de connexion, sécurité). Nous n'utilisons pas de cookies publicitaires.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">9. Modifications</h2>
+          <p class="mt-3">Cette politique peut être mise à jour. En cas de changement important, nous vous en informerons par e-mail ou via la Plateforme.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

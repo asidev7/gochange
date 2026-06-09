@@ -1,0 +1,53 @@
+{% load static %}
+<header class="sticky top-0 z-40 border-b border-gray-100 bg-white/80 backdrop-blur-md"
+        x-data="{open:false}">
+  <div class="container-x flex h-16 items-center justify-between">
+    <a href="{% url 'core:landing' %}" class="flex items-center">
+      {# Logo SVG — remplaçable par votre propre fichier static/img/logo.svg #}
+      <img src="{% static 'img/logo.svg' %}" alt="GoChange" class="h-8 w-auto">
+    </a>
+
+    <nav class="hidden items-center gap-1 rounded-full border border-gray-100 bg-soft/60 px-2 py-1 md:flex">
+      <a href="{% url 'core:landing' %}#comment" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">Comment ça marche</a>
+      <a href="{% url 'core:taux' %}" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">Taux du jour</a>
+      <a href="{% url 'core:landing' %}#pourquoi" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">Pourquoi nous</a>
+      <a href="{% url 'core:faq' %}" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">FAQ</a>
+    </nav>
+
+    <div class="hidden items-center gap-2 md:flex">
+      {% if user.is_authenticated %}
+        <a href="{% url 'exchange:dashboard' %}" class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark">Mon espace</a>
+      {% else %}
+        <a href="{% url 'accounts:connexion' %}" class="rounded-full px-4 py-2 text-sm font-semibold text-ink transition hover:text-primary">Connexion</a>
+        <a href="{% url 'accounts:inscription' %}" class="group inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark">
+          Créer un compte
+          <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+        </a>
+      {% endif %}
+    </div>
+
+    <button @click="open=!open" class="md:hidden" aria-label="Menu">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"/>
+      </svg>
+    </button>
+  </div>
+
+  {# Menu mobile #}
+  <div x-show="open" x-cloak class="border-t border-gray-100 md:hidden">
+    <div class="container-x flex flex-col gap-1 py-3">
+      <a href="{% url 'core:landing' %}#comment" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">Comment ça marche</a>
+      <a href="{% url 'core:taux' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">Taux du jour</a>
+      <a href="{% url 'core:faq' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">FAQ</a>
+      <a href="{% url 'core:contact' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">Contact</a>
+      <div class="mt-2 flex flex-col gap-2 border-t border-gray-100 pt-3">
+        {% if user.is_authenticated %}
+          <a href="{% url 'exchange:dashboard' %}" class="rounded-full bg-primary px-4 py-2 text-center text-sm font-semibold text-white">Mon espace</a>
+        {% else %}
+          <a href="{% url 'accounts:connexion' %}" class="rounded-full border border-gray-200 px-4 py-2 text-center text-sm font-medium">Connexion</a>
+          <a href="{% url 'accounts:inscription' %}" class="rounded-full bg-primary px-4 py-2 text-center text-sm font-semibold text-white">Créer un compte</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>

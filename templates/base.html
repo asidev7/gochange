@@ -1,0 +1,96 @@
+{% load static %}<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ meta_title|default:"GoChange — Naira ⇄ FCFA" }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ meta_description|default:"Échangez vos Naira en FCFA au vrai taux du jour, sur votre Mobile Money ou votre compte bancaire." }}{% endblock %}">
+  <link rel="canonical" href="{{ SITE_URL }}{{ request.path }}">
+
+  {# Open Graph #}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="GoChange">
+  <meta property="og:title" content="{{ meta_title|default:'GoChange — Naira ⇄ FCFA' }}">
+  <meta property="og:description" content="{{ meta_description|default:'Échangez vos Naira en FCFA au vrai taux du jour.' }}">
+  <meta property="og:url" content="{{ SITE_URL }}{{ request.path }}">
+  <meta property="og:image" content="{{ SITE_URL }}{% static 'img/og.png' %}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+
+  {# Police Inter #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  {# Tailwind CDN + configuration GoChange (style xe.com — bleu) #}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0066FF',          /* bleu xe */
+            'primary-dark': '#0052CC',
+            'primary-soft': '#E6F0FF',
+            accent: '#00B3FF',           /* cyan clair */
+            navy: '#0B1B4D',             /* footer / sections sombres */
+            'navy-light': '#13265F',
+            soft: '#F1F6FF',
+            ink: '#0F172A',
+            'gray-secondary': '#64748B',
+          },
+          fontFamily: {
+            sans: ['Inter', 'Arial', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          maxWidth: { 'screen-xl': '1200px' },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    [x-cloak] { display: none !important; }
+    .container-x { max-width: 1200px; margin-left: auto; margin-right: auto; padding-left: 1.25rem; padding-right: 1.25rem; }
+    /* Dégradé de marque bleu (logo, halos décoratifs) */
+    .brand-gradient { background-image: linear-gradient(135deg, #0066FF 0%, #00B3FF 100%); }
+    .brand-text { background-image: linear-gradient(135deg, #0066FF, #00B3FF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    /* Carte blanche légèrement floutée (effet verre) */
+    .glass { background: rgba(255,255,255,0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    /* Carrousel témoignages */
+    .swipe-track { display: flex; transition: transform .5s cubic-bezier(.4,0,.2,1); }
+    .swipe-slide { min-width: 100%; }
+  </style>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+
+  {# Alpine.js (+ plugin collapse, chargé avant le cœur) #}
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="bg-white text-ink antialiased">
+
+  {% block navbar %}{% include "components/_navbar.html" %}{% endblock %}
+
+  {% if messages %}
+    <div class="container-x mt-4" x-data="{show:true}" x-show="show">
+      {% for message in messages %}
+        <div class="mb-2 flex items-start justify-between gap-3 rounded-lg border px-4 py-3 text-sm
+          {% if message.tags == 'success' %}border-green-200 bg-green-50 text-green-800
+          {% elif message.tags == 'error' %}border-red-200 bg-red-50 text-red-800
+          {% elif message.tags == 'warning' %}border-amber-200 bg-amber-50 text-amber-800
+          {% else %}border-blue-200 bg-blue-50 text-blue-800{% endif %}">
+          <span>{{ message }}</span>
+          <button @click="show=false" class="opacity-60 hover:opacity-100">&times;</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  {% block footer %}{% include "components/_footer.html" %}{% endblock %}
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

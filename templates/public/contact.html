@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="border-b border-gray-200">
+  <div class="container-x grid gap-12 py-16 md:grid-cols-2 md:py-20">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Contactez-nous</h1>
+      <p class="mt-4 text-lg text-gray-secondary">
+        Une question sur un échange, un retrait, votre niveau de vérification ?
+        Nous répondons vite, et ce sont de vraies personnes.
+      </p>
+
+      <div class="mt-8 space-y-5">
+        <a href="{{ WHATSAPP_LINK }}" target="_blank" rel="noopener" class="flex items-start gap-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-soft text-green-600">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
+          </span>
+          <span>
+            <span class="block font-semibold">WhatsApp — 7j/7</span>
+            <span class="block text-sm text-gray-secondary">{{ WHATSAPP_NUMBER }}</span>
+          </span>
+        </a>
+        <div class="flex items-start gap-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-soft text-primary">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+          </span>
+          <span>
+            <span class="block font-semibold">E-mail</span>
+            <span class="block text-sm text-gray-secondary">contact@gochange.store</span>
+          </span>
+        </div>
+        <div class="flex items-start gap-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-soft text-primary">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0z"/></svg>
+          </span>
+          <span>
+            <span class="block font-semibold">Adresse</span>
+            <span class="block text-sm text-gray-secondary">ASITECH SOLUTION — Parakou, Bénin</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 p-6 md:p-8">
+      <h2 class="text-lg font-semibold">Envoyez-nous un message</h2>
+      <form method="post" class="mt-6 space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+          <div>
+            <label class="mb-1.5 block text-sm font-medium" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}<p class="mt-1 text-sm text-red-600">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary-dark">
+          Envoyer le message
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

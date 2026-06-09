@@ -1,0 +1,12 @@
+{% comment %}
+Badge logo unitaire. Tente le vrai logo en ligne, repli sur un badge texte coloré.
+Paramètres : name, domain, color, dark (texte sombre si fond clair comme MTN).
+{% endcomment %}
+<span class="inline-flex h-11 items-center gap-2 rounded-xl border border-gray-100 bg-white px-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+  <img src="https://logo.clearbit.com/{{ domain }}?size=48" alt="{{ name }}"
+       class="h-6 w-auto max-w-[90px] object-contain"
+       loading="lazy"
+       onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+  <span class="hidden h-6 items-center rounded-md px-2 text-sm font-bold {% if dark %}text-ink{% else %}text-white{% endif %}"
+        style="{% if dark %}background:{{ color }}{% else %}background:{{ color }}{% endif %}">{{ name }}</span>
+</span>

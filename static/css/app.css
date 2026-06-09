@@ -1,0 +1,24 @@
+/* Surcharges légères — GoChange. L'essentiel du style passe par Tailwind. */
+
+/* Champs de formulaire générés par Django sans classe explicite */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Masque les flèches des inputs number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+
+/* Barres de progression KYC */
+.progress-track { background: #E5E7EB; border-radius: 9999px; overflow: hidden; }
+.progress-fill { background: linear-gradient(90deg, #0066FF, #00B3FF); height: 100%; transition: width .4s ease; }
+
+/* Logo carré dégradé réutilisé partout */
+.logo-badge { background-image: linear-gradient(135deg, #0066FF 0%, #00B3FF 100%); }

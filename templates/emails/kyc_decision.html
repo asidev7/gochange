@@ -1,0 +1,17 @@
+<div style="font-family: Arial, sans-serif; max-width: 520px; margin: auto; color: #0A0A0A;">
+  {% if approved %}
+    <h2 style="color:#0048AE;">Votre niveau {{ level }} est approuvé 🎉</h2>
+    <p>Bonjour {{ user.display_name }},</p>
+    <p>Bonne nouvelle : votre passage au <strong>niveau {{ level }}</strong> a été validé.
+       Vos limites de dépôt et de retrait sont désormais relevées.</p>
+    <p>Vous pouvez dès maintenant profiter de vos nouveaux plafonds depuis votre tableau de bord.</p>
+  {% else %}
+    <h2 style="color:#B91C1C;">Votre demande de niveau {{ level }}</h2>
+    <p>Bonjour {{ user.display_name }},</p>
+    <p>Nous n'avons malheureusement pas pu valider votre passage au niveau {{ level }}.</p>
+    {% if reason %}<p><strong>Motif :</strong> {{ reason }}</p>{% endif %}
+    <p>Vous pouvez soumettre à nouveau des documents lisibles et conformes depuis votre profil.</p>
+  {% endif %}
+  <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;">
+  <p style="font-size:12px;color:#6B7280;">GoChange — ASITECH SOLUTION, Parakou (Bénin)</p>
+</div>

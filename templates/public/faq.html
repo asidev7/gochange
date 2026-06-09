@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="border-b border-gray-200">
+  <div class="container-x py-16 md:py-20">
+    <div class="mx-auto max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Questions fréquentes</h1>
+      <p class="mt-4 text-lg text-gray-secondary">
+        Tout ce qu'il faut savoir avant votre premier échange. Une autre question ?
+        <a href="{% url 'core:contact' %}" class="font-medium text-primary hover:underline">Écrivez-nous</a>.
+      </p>
+
+      <div class="mt-10 divide-y divide-gray-200 rounded-xl border border-gray-200" x-data="{open:1}">
+        {% include "components/_faq_item.html" with i=1 q="Qu'est-ce que GoChange exactement ?" a="GoChange est une plateforme béninoise qui vous permet de convertir des Naira en FCFA, et inversement, au taux du jour. Vous déposez votre argent, vous l'échangez, puis vous le retirez sur votre Mobile Money ou votre compte bancaire." %}
+        {% include "components/_faq_item.html" with i=2 q="Combien de temps prend une opération ?" a="Les dépôts par Mobile Money et les échanges sont quasi instantanés. Les retraits vers une banque nigériane ou un compte Mobile Money arrivent en général en quelques minutes ; en cas de forte affluence chez un opérateur, comptez jusqu'à une heure." %}
+        {% include "components/_faq_item.html" with i=3 q="Quels sont les frais ?" a="Nous appliquons un pourcentage sur chaque échange. Ce montant s'affiche avant que vous validiez, vous savez donc exactement ce que vous allez recevoir. Il n'y a aucun frais caché ni surcoût au moment du retrait." %}
+        {% include "components/_faq_item.html" with i=4 q="Quels opérateurs et banques sont acceptés ?" a="Pour le FCFA : MTN MoMo, Moov Money et Celtiis Cash. Pour le Naira : carte bancaire, virement, et les principales banques et fintechs nigérianes (GTBank, Access, Zenith, UBA, First Bank, Opay, PalmPay, Kuda…)." %}
+        {% include "components/_faq_item.html" with i=5 q="Comment éviter de me tromper de bénéficiaire ?" a="Pour un retrait vers une banque nigériane, vous saisissez le numéro de compte (10 chiffres) et GoChange affiche automatiquement le nom du titulaire. Vous devez cocher « Je confirme le bénéficiaire » avant que le transfert parte." %}
+        {% include "components/_faq_item.html" with i=6 q="Pourquoi dois-je vérifier mon identité (KYC) ?" a="La vérification d'identité protège votre compte et nous permet de respecter la réglementation. Le niveau 1 fonctionne dès l'inscription. En envoyant une pièce d'identité, vous passez au niveau 2, puis au niveau 3 avec un justificatif d'adresse ou un registre de commerce." %}
+        {% include "components/_faq_item.html" with i=7 q="Quelles sont les limites par jour ?" a="Niveau 1 : 50 000 FCFA de dépôt et de retrait par jour. Niveau 2 : 500 000 FCFA par jour. Niveau 3 : 2 000 000 FCFA par jour. Les compteurs se remettent à zéro chaque nuit à minuit." %}
+        {% include "components/_faq_item.html" with i=8 q="Mon argent est-il en sécurité ?" a="Tant que vous n'échangez pas, vos fonds restent dans votre portefeuille et peuvent être retirés à tout moment. Les paiements passent par PayDunya et Paystack, deux prestataires reconnus dans la sous-région. Vos données sont chiffrées." %}
+        {% include "components/_faq_item.html" with i=9 q="Le taux change-t-il après que j'ai validé ?" a="Non. Au moment où vous confirmez un échange, le taux est figé. Le montant que vous voyez à l'écran est exactement celui que vous recevez, même si le taux du jour bouge ensuite." %}
+        {% include "components/_faq_item.html" with i=10 q="Comment vous contacter en cas de problème ?" a="Notre équipe répond sur WhatsApp 7j/7, ainsi que par e-mail à contact@gochange.store et via le formulaire de contact. Ce sont de vraies personnes basées à Parakou qui vous répondent." %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container-x py-16 text-center">
+    <h2 class="text-2xl font-bold tracking-tight">Vous n'avez pas trouvé votre réponse ?</h2>
+    <a href="{{ WHATSAPP_LINK }}" target="_blank" rel="noopener"
+       class="mt-6 inline-block rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-dark">
+      Nous écrire sur WhatsApp
+    </a>
+  </div>
+</section>
+{% endblock %}

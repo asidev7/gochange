@@ -1,0 +1,74 @@
+{% extends "app/_app_base.html" %}
+{% load humanize %}
+{% block title %}Échanger — GoChange{% endblock %}
+
+{% block app_content %}
+{% with xof_per_ngn=rate.xof_per_ngn|default:0.385 fee=rate.fee_percent|default:1.5 %}
+<div class="mx-auto max-w-xl">
+  <h1 class="text-2xl font-bold tracking-tight">Échanger</h1>
+  <p class="mt-1 text-sm text-gray-secondary">
+    Le taux est figé au moment où vous validez. Ce que vous voyez, c'est ce que vous recevez.
+  </p>
+
+  <form method="post" class="mt-6 space-y-4 rounded-2xl border border-gray-200 p-6"
+        x-data="echange({{ xof_per_ngn }}, {{ fee }}, {{ wallet.balance_ngn|stringformat:'f' }}, {{ wallet.balance_xof|stringformat:'f' }})">
+    {% csrf_token %}
+
+    <div class="rounded-xl border border-gray-200 bg-soft p-4">
+      <div class="flex items-center justify-between">
+        <label class="text-xs font-medium text-gray-secondary">Je convertis</label>
+        <select name="from_currency" x-model="from" class="bg-transparent text-sm font-semibold focus:outline-none">
+          <option value="NGN">Naira (NGN)</option>
+          <option value="XOF">FCFA (XOF)</option>
+        </select>
+      </div>
+      <input type="number" name="amount" x-model.number="amount" min="100" required
+             class="mt-1 w-full bg-transparent text-2xl font-bold focus:outline-none" placeholder="0">
+      <p class="mt-1 text-xs text-gray-secondary">Solde disponible : <span x-text="formattedBalance()"></span></p>
+      {% for error in form.amount.errors %}<p class="mt-1 text-sm text-red-600">{{ error }}</p>{% endfor %}
+    </div>
+
+    <div class="flex justify-center">
+      <button type="button" @click="swap()" class="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white hover:border-primary">
+        <svg class="h-4 w-4 text-primary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+      </button>
+    </div>
+
+    <div class="rounded-xl border border-gray-200 bg-soft p-4">
+      <label class="text-xs font-medium text-gray-secondary">Vous recevez (net)</label>
+      <div class="mt-1 text-2xl font-bold text-primary" x-text="formatted(net)"></div>
+    </div>
+
+    <dl class="space-y-2 text-sm">
+      <div class="flex justify-between"><dt class="text-gray-secondary">Taux appliqué</dt><dd class="font-medium" x-text="rateLabel()"></dd></div>
+      <div class="flex justify-between"><dt class="text-gray-secondary">Frais ({{ fee }} %)</dt><dd class="font-medium" x-text="formatted(feeAmount)"></dd></div>
+    </dl>
+
+    <button type="submit" :disabled="!enough()" class="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-50">
+      <span x-show="enough()">Valider l'échange</span>
+      <span x-show="!enough()" x-cloak>Solde insuffisant</span>
+    </button>
+  </form>
+</div>
+{% endwith %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function echange(rate, fee, balNgn, balXof) {
+  return {
+    from: 'NGN', amount: 0, rate: rate, fee: fee,
+    bal: { NGN: balNgn, XOF: balXof },
+    get to() { return this.from === 'NGN' ? 'XOF' : 'NGN'; },
+    get gross() { if (!this.amount || this.amount < 0) return 0; return this.from === 'NGN' ? this.amount * this.rate : this.amount / this.rate; },
+    get feeAmount() { return this.gross * this.fee / 100; },
+    get net() { return Math.max(this.gross - this.feeAmount, 0); },
+    swap() { this.from = this.to; },
+    enough() { return this.amount > 0 && this.amount <= this.bal[this.from]; },
+    rateLabel() { return this.from === 'NGN' ? '1 NGN = ' + this.rate.toFixed(3) + ' XOF' : '1 XOF = ' + (1/this.rate).toFixed(3) + ' NGN'; },
+    formatted(v) { return new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(v) + ' ' + this.to; },
+    formattedBalance() { return new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(this.bal[this.from]) + ' ' + this.from; }
+  }
+}
+</script>
+{% endblock %}

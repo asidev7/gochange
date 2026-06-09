@@ -1,0 +1,39 @@
+{% extends "account/_auth_base.html" %}
+
+{% block content %}
+<section class="relative overflow-hidden bg-gradient-to-b from-soft to-white">
+  <div class="container-x flex min-h-screen items-center justify-center py-28">
+    <div class="w-full max-w-md rounded-3xl border border-gray-100 bg-white p-8 text-center shadow-xl shadow-primary/5">
+      {% if ok %}
+        <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        </span>
+        <h1 class="mt-4 text-2xl font-bold tracking-tight">E-mail confirmé</h1>
+        <p class="mt-2 text-sm text-gray-secondary">Votre compte est au niveau 1. Vous pouvez commencer à déposer et échanger.</p>
+        <a href="{% url 'exchange:dashboard' %}" class="mt-6 inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-dark">Aller au tableau de bord</a>
+      {% elif ok == False %}
+        <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+        </span>
+        <h1 class="mt-4 text-2xl font-bold tracking-tight">Lien invalide</h1>
+        <p class="mt-2 text-sm text-gray-secondary">Ce lien de vérification est expiré ou déjà utilisé.</p>
+        <a href="{% url 'accounts:renvoyer_verification' %}" class="mt-6 inline-block rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-dark">Renvoyer un e-mail</a>
+      {% else %}
+        <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-primary">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+        </span>
+        <h1 class="mt-4 text-2xl font-bold tracking-tight">Vérifiez votre boîte mail</h1>
+        <p class="mt-2 text-sm text-gray-secondary">
+          Nous avons envoyé un lien de confirmation à <span class="font-medium text-ink">{{ user.email }}</span>.
+          Cliquez dessus pour activer votre compte.
+        </p>
+        <p class="mt-1 text-xs text-gray-secondary">(En mode développement, le lien s'affiche dans la console du serveur.)</p>
+        <form method="post" action="{% url 'accounts:renvoyer_verification' %}" class="mt-6">
+          {% csrf_token %}
+          <button type="submit" class="rounded-lg border border-gray-300 px-6 py-3 text-sm font-semibold hover:border-gray-400">Renvoyer l'e-mail</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

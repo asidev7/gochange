@@ -1,0 +1,14 @@
+<div class="px-6">
+  <button @click="open === {{ i }} ? open = null : open = {{ i }}"
+          class="flex w-full items-center justify-between gap-4 py-5 text-left">
+    <span class="font-medium text-ink">{{ q }}</span>
+    <svg class="h-5 w-5 shrink-0 text-gray-secondary transition-transform duration-200"
+         :class="open === {{ i }} ? 'rotate-180' : ''"
+         fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
+    </svg>
+  </button>
+  <div x-show="open === {{ i }}" x-collapse x-cloak class="pb-5 pr-8 text-sm leading-relaxed text-gray-secondary">
+    {{ a }}
+  </div>
+</div>

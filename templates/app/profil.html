@@ -1,0 +1,73 @@
+{% extends "app/_app_base.html" %}
+{% load humanize %}
+{% block title %}Profil & KYC — GoChange{% endblock %}
+
+{% block app_content %}
+<h1 class="text-2xl font-bold tracking-tight">Profil & vérification</h1>
+
+<div class="mt-6 grid gap-6 lg:grid-cols-2">
+  <!-- Infos personnelles -->
+  <div class="rounded-2xl border border-gray-200 p-6">
+    <h2 class="text-sm font-semibold">Informations personnelles</h2>
+    <form method="post" class="mt-4 space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="mb-1.5 block text-sm font-medium">E-mail</label>
+        <input type="email" value="{{ user.email }}" disabled class="w-full rounded-lg border border-gray-200 bg-soft px-4 py-2.5 text-[15px] text-gray-secondary">
+        <p class="mt-1 text-xs {% if user.email_verified %}text-green-600{% else %}text-amber-600{% endif %}">
+          {% if user.email_verified %}✓ Adresse vérifiée{% else %}Adresse non vérifiée{% endif %}
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="mb-1.5 block text-sm font-medium">Prénom</label>{{ form.first_name }}</div>
+        <div><label class="mb-1.5 block text-sm font-medium">Nom</label>{{ form.last_name }}</div>
+      </div>
+      <div><label class="mb-1.5 block text-sm font-medium">Téléphone</label>{{ form.phone }}</div>
+      <div><label class="mb-1.5 block text-sm font-medium">Pays</label>{{ form.country }}</div>
+      <button class="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-dark">Enregistrer</button>
+    </form>
+
+    <div class="mt-6 border-t border-gray-200 pt-4">
+      <a href="{% url 'accounts:changer_mot_de_passe' %}" class="text-sm font-medium text-primary hover:underline">Changer mon mot de passe →</a>
+    </div>
+  </div>
+
+  <!-- KYC -->
+  <div class="rounded-2xl border border-gray-200 p-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-sm font-semibold">Niveau de vérification</h2>
+      <span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">{{ kyc.level_label }}</span>
+    </div>
+
+    {% if kyc.status == 'pending' %}
+      <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        Votre demande de passage au niveau {{ kyc.pending_level }} est en cours de vérification (sous 24 h ouvrées).
+      </div>
+    {% elif kyc.status == 'rejected' %}
+      <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        Votre dernière demande a été refusée. {% if kyc.rejection_reason %}Motif : {{ kyc.rejection_reason }}{% endif %}
+      </div>
+    {% endif %}
+
+    <ul class="mt-4 space-y-3 text-sm">
+      {% for lvl, d in limits.items %}
+      <li class="flex items-center justify-between rounded-lg border px-4 py-3 {% if kyc.level == lvl %}border-primary bg-primary/5{% else %}border-gray-200{% endif %}">
+        <div>
+          <p class="font-medium">Niveau {{ lvl }} — {{ d.label }}</p>
+          <p class="text-xs text-gray-secondary">{{ d.deposit_xof_per_day|floatformat:0|intcomma }} FCFA / jour (dépôt & retrait)</p>
+        </div>
+        {% if kyc.level >= lvl %}<span class="text-xs font-semibold text-green-600">Atteint</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% if kyc.can_upgrade %}
+    <a href="{% url 'accounts:kyc_upgrade' %}" class="mt-5 block rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-white hover:bg-primary-dark">
+      Augmenter mes limites
+    </a>
+    {% elif kyc.level == 3 %}
+    <p class="mt-5 text-center text-sm text-gray-secondary">Vous bénéficiez du niveau maximum.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

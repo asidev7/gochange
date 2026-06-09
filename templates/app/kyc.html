@@ -1,0 +1,53 @@
+{% extends "app/_app_base.html" %}
+{% block title %}Vérification d'identité — GoChange{% endblock %}
+
+{% block app_content %}
+<div class="mx-auto max-w-xl">
+  <a href="{% url 'accounts:profil' %}" class="text-sm text-gray-secondary hover:text-ink">← Retour au profil</a>
+  <h1 class="mt-3 text-2xl font-bold tracking-tight">Passer au niveau {{ target_level }}</h1>
+  <p class="mt-1 text-sm text-gray-secondary">
+    {% if target_level == 2 %}
+      Envoyez une pièce d'identité (CNI, passeport ou CIP) et un selfie. Vos limites passeront à 500 000 FCFA/jour.
+    {% else %}
+      Ajoutez un justificatif d'adresse ou votre registre de commerce (RCCM). Vos limites passeront à 2 000 000 FCFA/jour.
+    {% endif %}
+  </p>
+
+  <form method="post" enctype="multipart/form-data" class="mt-6 space-y-5 rounded-2xl border border-gray-200 p-6">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ form.non_field_errors }}</div>{% endif %}
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">{{ form.full_name.label }}</label>
+      {{ form.full_name }}
+      {% for e in form.full_name.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+    </div>
+
+    {% if target_level == 2 %}
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">{{ form.id_document.label }}</label>
+      {{ form.id_document }}
+      {% for e in form.id_document.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+    </div>
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">{{ form.selfie.label }}</label>
+      {{ form.selfie }}
+      {% for e in form.selfie.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+    </div>
+    {% else %}
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">{{ form.address_document.label }}</label>
+      {{ form.address_document }}
+      {% for e in form.address_document.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+    </div>
+    {% endif %}
+
+    <p class="text-xs text-gray-secondary">
+      Formats acceptés : JPG, PNG ou PDF. Vos documents sont stockés de façon sécurisée et ne servent qu'à la vérification.
+    </p>
+    <button class="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary-dark">
+      Envoyer pour vérification
+    </button>
+  </form>
+</div>
+{% endblock %}

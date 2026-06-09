@@ -1,0 +1,434 @@
+{% extends "base.html" %}
+{% load static humanize %}
+
+{% block content %}
+{% with xof_per_ngn=rate.xof_per_ngn|default:"0.385" fee=rate.fee_percent|default:"1.5" %}
+
+<!-- HERO + SIMULATEUR -->
+<section class="relative overflow-hidden border-b border-gray-100">
+  {# halos décoratifs doux #}
+  <div class="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/10 blur-3xl"></div>
+  <div class="pointer-events-none absolute -right-24 top-24 h-80 w-80 rounded-full bg-accent/10 blur-3xl"></div>
+
+  <div class="container-x relative grid items-center gap-12 py-16 md:grid-cols-2 md:py-24">
+    <div>
+      <span class="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary-soft px-3.5 py-1.5 text-xs font-semibold text-primary">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+        </span>
+        Corridor Bénin 🇧🇯 – Nigeria 🇳🇬
+      </span>
+      <h1 class="mt-5 text-[2.6rem] font-extrabold leading-[1.05] tracking-tight md:text-6xl">
+        Envoyez vos Naira,<br>recevez du <span class="brand-text">FCFA</span>.
+        <span class="mt-1 block text-2xl font-bold text-gray-secondary md:text-3xl">Simple, rapide, et trop mignon 💸</span>
+      </h1>
+      <p class="mt-6 max-w-lg text-lg leading-relaxed text-gray-secondary">
+        Vous vendez au Nigeria et vivez au Bénin ? Vous payez un fournisseur à Lagos ?
+        GoChange convertit votre argent au vrai taux du jour, directement sur votre
+        Mobile Money ou votre compte bancaire.
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href="{% url 'accounts:inscription' %}" class="group inline-flex items-center justify-center gap-1.5 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark">
+          Commencer maintenant
+          <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+        </a>
+        <a href="#comment" class="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-7 py-3.5 text-sm font-semibold transition hover:border-primary/40 hover:text-primary">
+          Voir comment ça marche
+        </a>
+      </div>
+      <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-secondary">
+        <span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Inscription gratuite</span>
+        <span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Aucun frais caché</span>
+        <span class="inline-flex items-center gap-1.5"><svg class="h-4 w-4 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Support 7j/7</span>
+      </div>
+    </div>
+
+    <!-- Image héro -->
+    <div class="relative">
+      <div class="pointer-events-none absolute -inset-8 -z-10 rounded-[2.5rem] bg-primary/5 blur-2xl"></div>
+      <img src="https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&w=1000&q=80"
+           alt="Cliente utilisant le paiement mobile sur son téléphone"
+           class="aspect-[4/5] w-full rounded-[2.5rem] border border-gray-100 object-cover shadow-2xl shadow-primary/10"
+           loading="eager"
+           onerror="this.src='https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&w=1000&q=80';">
+
+      {# carte verre flottante : taux du jour #}
+      <div class="glass absolute -top-5 -left-5 w-52 rounded-2xl border border-white/60 p-4 shadow-lg">
+        <div class="flex items-center gap-2">
+          <span class="flex h-2 w-2"><span class="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-accent opacity-75"></span><span class="relative h-2 w-2 rounded-full bg-accent"></span></span>
+          <p class="text-xs font-semibold text-gray-secondary">Taux du jour</p>
+        </div>
+        <p class="mt-1 text-lg font-extrabold text-ink">1 NGN = <span class="text-primary">{{ xof_per_ngn|floatformat:3 }}</span></p>
+        <p class="text-[11px] text-gray-secondary">XOF • mis à jour aujourd'hui</p>
+      </div>
+
+      {# carte verre flottante : reçu #}
+      <div class="glass absolute -bottom-5 -right-5 w-56 rounded-2xl border border-white/60 p-4 shadow-lg">
+        <p class="text-xs font-medium text-gray-secondary">Retrait reçu ✅</p>
+        <p class="mt-1 text-lg font-extrabold text-ink">+ 250 000 <span class="text-sm font-semibold text-primary">FCFA</span></p>
+        <p class="text-[11px] text-gray-secondary">sur MTN MoMo • il y a 2 min</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIMULATEUR EN DIRECT -->
+<section class="border-b border-gray-100 bg-soft">
+  <div class="container-x grid items-center gap-10 py-14 md:grid-cols-2 md:py-16"
+       x-data="simulateur({{ xof_per_ngn }}, {{ fee }})">
+    <div>
+      <span class="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary">Simulateur</span>
+      <h2 class="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">Calculez votre conversion en direct</h2>
+      <p class="mt-4 max-w-md text-lg text-gray-secondary">
+        Entrez un montant, choisissez le sens, et voyez exactement ce que reçoit votre
+        bénéficiaire — frais inclus, avant même de créer un compte.
+      </p>
+      <dl class="mt-6 space-y-2 text-sm">
+        <div class="flex max-w-xs justify-between"><dt class="text-gray-secondary">Taux appliqué</dt>
+          <dd class="font-semibold" x-text="rateLabel()"></dd></div>
+        <div class="flex max-w-xs justify-between"><dt class="text-gray-secondary">Frais ({{ fee }} %)</dt>
+          <dd class="font-semibold" x-text="formatted(feeAmount)"></dd></div>
+      </dl>
+    </div>
+
+    <div class="rounded-3xl border border-gray-100 bg-white p-6 shadow-xl shadow-primary/5 md:p-7">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold">Simulateur de conversion</h3>
+        <span class="rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary">En direct</span>
+      </div>
+
+      <div class="mt-5 space-y-2">
+        <div class="rounded-2xl border border-gray-100 bg-soft p-4 transition focus-within:border-primary/40">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-medium text-gray-secondary">Vous envoyez</label>
+            <select x-model="from" @change="swapCheck()" class="cursor-pointer rounded-lg bg-white px-2 py-1 text-sm font-semibold focus:outline-none">
+              <option value="NGN">Naira (NGN)</option>
+              <option value="XOF">FCFA (XOF)</option>
+            </select>
+          </div>
+          <input type="number" x-model.number="amount" min="0"
+                 class="mt-1 w-full bg-transparent text-3xl font-extrabold focus:outline-none" placeholder="0">
+        </div>
+
+        <div class="relative flex justify-center">
+          <button @click="swap()" class="z-10 -my-4 flex h-10 w-10 items-center justify-center rounded-full border-4 border-white bg-primary text-white transition hover:bg-primary-dark" aria-label="Inverser">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="rounded-2xl border border-primary/15 bg-primary-soft p-4">
+          <label class="text-xs font-medium text-gray-secondary" x-text="from==='NGN' ? 'Le bénéficiaire reçoit (FCFA)' : 'Le bénéficiaire reçoit (Naira)'"></label>
+          <div class="mt-1 text-3xl font-extrabold text-primary" x-text="formatted(net)"></div>
+        </div>
+      </div>
+
+      <a href="{% url 'accounts:inscription' %}" class="mt-5 block rounded-full bg-primary px-4 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-primary-dark">
+        Échanger ce montant
+      </a>
+      <p class="mt-3 text-center text-xs text-gray-secondary">Ce que vous voyez, c'est ce que vous recevez 💯</p>
+    </div>
+  </div>
+</section>
+
+<!-- BANDEAU MOYENS DE PAIEMENT -->
+<section class="border-b border-gray-100 bg-soft">
+  <div class="container-x py-10">
+    <p class="mb-6 text-center text-sm font-medium text-gray-secondary">
+      Déposez et retirez avec les opérateurs et banques que vous utilisez déjà
+    </p>
+    {% include "components/_logos.html" %}
+  </div>
+</section>
+
+<!-- COMMENT ÇA MARCHE — texte à gauche, image à droite -->
+<section id="comment" class="border-b border-gray-100">
+  <div class="container-x grid items-center gap-12 py-16 md:grid-cols-2 md:py-24">
+    {# Colonne gauche : texte + étapes #}
+    <div>
+      <span class="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary">Comment ça marche</span>
+      <h2 class="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">Quatre étapes, quelques minutes</h2>
+      <p class="mt-4 text-lg text-gray-secondary">Pas de paperasse inutile, pas de cambiste. Vous gérez tout depuis votre téléphone.</p>
+
+      <ol class="mt-8 space-y-6">
+        <li class="flex gap-4">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">1</span>
+          <div><h3 class="font-semibold">Créez votre compte</h3>
+            <p class="mt-1 text-sm leading-relaxed text-gray-secondary">En 2 minutes, avec votre e-mail et votre numéro de téléphone. C'est gratuit.</p></div>
+        </li>
+        <li class="flex gap-4">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">2</span>
+          <div><h3 class="font-semibold">Déposez votre argent</h3>
+            <p class="mt-1 text-sm leading-relaxed text-gray-secondary">En FCFA (MTN, Moov, Celtiis) ou en Naira (carte, virement). Le solde apparaît tout de suite.</p></div>
+        </li>
+        <li class="flex gap-4">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">3</span>
+          <div><h3 class="font-semibold">Échangez au taux affiché</h3>
+            <p class="mt-1 text-sm leading-relaxed text-gray-secondary">Ce que vous voyez, c'est ce que vous recevez. Le taux est figé au moment où vous validez.</p></div>
+        </li>
+        <li class="flex gap-4">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">4</span>
+          <div><h3 class="font-semibold">Retirez où vous voulez</h3>
+            <p class="mt-1 text-sm leading-relaxed text-gray-secondary">Sur votre compte bancaire nigérian ou votre Mobile Money béninois. En quelques minutes.</p></div>
+        </li>
+      </ol>
+    </div>
+
+    {# Colonne droite : vraie image + carte verre flottante #}
+    <div class="relative">
+      <div class="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-primary/5 blur-2xl"></div>
+      <img src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&w=900&q=80"
+           alt="Paiement mobile avec un téléphone"
+           class="aspect-[4/5] w-full rounded-[2rem] border border-gray-100 object-cover shadow-xl shadow-primary/10"
+           loading="lazy"
+           onerror="this.src='https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=900&q=80';">
+      {# carte blanche floutée flottante #}
+      <div class="glass absolute -bottom-5 -left-5 w-56 rounded-2xl border border-white/60 p-4 shadow-lg">
+        <p class="text-xs font-medium text-gray-secondary">Retrait reçu ✅</p>
+        <p class="mt-1 text-lg font-extrabold text-ink">+ 250 000 <span class="text-sm font-semibold text-primary">FCFA</span></p>
+        <p class="text-[11px] text-gray-secondary">sur MTN MoMo • il y a 2 min</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="border-b border-gray-200 bg-soft">
+  <div class="container-x py-16 md:py-24">
+    <div class="max-w-2xl">
+      <h2 class="text-3xl font-bold tracking-tight md:text-4xl">Nos services</h2>
+      <p class="mt-4 text-lg text-gray-secondary">Tout ce qu'il faut pour gérer votre argent entre le Bénin et le Nigeria.</p>
+    </div>
+    <div class="mt-12 grid gap-6 md:grid-cols-3">
+      <div class="rounded-xl border border-gray-200 bg-white p-6">
+        <h3 class="font-semibold">Change Naira ⇄ FCFA</h3>
+        <p class="mt-2 text-sm leading-relaxed text-gray-secondary">Convertissez dans les deux sens, au taux du jour, sans avoir à négocier avec qui que ce soit.</p>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-6">
+        <h3 class="font-semibold">Paiements fournisseurs</h3>
+        <p class="mt-2 text-sm leading-relaxed text-gray-secondary">Payez vos fournisseurs à Lagos, Cotonou ou Parakou directement sur leur compte, sans intermédiaire.</p>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-6">
+        <h3 class="font-semibold">Portefeuille multi-devises</h3>
+        <p class="mt-2 text-sm leading-relaxed text-gray-secondary">Gardez vos soldes en Naira et en FCFA au même endroit, et échangez quand le taux vous convient.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POURQUOI NOUS -->
+<section id="pourquoi" class="border-b border-gray-200">
+  <div class="container-x py-16 md:py-24">
+    <div class="max-w-2xl">
+      <h2 class="text-3xl font-bold tracking-tight md:text-4xl">Pourquoi passer par GoChange</h2>
+      <p class="mt-4 text-lg text-gray-secondary">Des règles claires, pensées pour les vraies habitudes des commerçants du corridor.</p>
+    </div>
+    <div class="mt-12 grid gap-x-10 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+      {% include "components/_argument.html" with title="Le nom du bénéficiaire s'affiche" body="Avant chaque transfert vers une banque nigériane, le nom du titulaire du compte apparaît. Impossible de se tromper de destinataire." %}
+      {% include "components/_argument.html" with title="Frais affichés avant validation" body="Vous voyez le taux et les frais avant de confirmer. Jamais de surprise une fois l'opération lancée." %}
+      {% include "components/_argument.html" with title="Support WhatsApp 7j/7" body="Des humains qui répondent, en français comme en anglais, du lundi au dimanche." %}
+      {% include "components/_argument.html" with title="Taux honnête du jour" body="Nous affichons un taux proche du marché, pas un taux gonflé pour cacher des marges." %}
+      {% include "components/_argument.html" with title="Vos fonds restent à vous" body="Tant que vous n'échangez pas, votre argent dort dans votre portefeuille, prêt à être retiré." %}
+      {% include "components/_argument.html" with title="Limites qui grandissent avec vous" body="Vérifiez votre identité pour augmenter vos plafonds, jusqu'à 2 000 000 FCFA par jour." %}
+    </div>
+  </div>
+</section>
+
+<!-- TAUX DU JOUR -->
+<section class="border-b border-gray-200 bg-soft">
+  <div class="container-x py-16 md:py-24">
+    <div class="grid items-center gap-10 md:grid-cols-2">
+      <div>
+        <h2 class="text-3xl font-bold tracking-tight md:text-4xl">Taux du jour</h2>
+        <p class="mt-4 text-lg text-gray-secondary">
+          Mis à jour chaque jour. Le même taux pour tout le monde, affiché en clair.
+        </p>
+        <a href="{% url 'core:taux' %}" class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+          Voir l'historique des taux
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+        </a>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="rounded-xl border border-gray-200 bg-white p-6">
+          <p class="text-sm text-gray-secondary">1 000 NGN =</p>
+          <p class="mt-1 text-2xl font-bold text-primary">{% widthratio rate.xof_per_ngn|default:0.385 1 1000 %} FCFA</p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-6">
+          <p class="text-sm text-gray-secondary">1 000 FCFA =</p>
+          <p class="mt-1 text-2xl font-bold text-primary">{% widthratio rate.ngn_per_xof|default:2.6 1 1000 %} NGN</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TÉMOIGNAGES — carrousel animé (swipe un à un) -->
+<section class="border-b border-gray-100 bg-navy text-white">
+  <div class="container-x py-16 md:py-24">
+    <div class="mx-auto max-w-3xl text-center">
+      <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold">Témoignages</span>
+      <h2 class="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">Ils utilisent GoChange</h2>
+      <p class="mt-4 text-lg text-white/70">Des commerçants et des familles, des deux côtés de la frontière.</p>
+    </div>
+
+    <div class="mx-auto mt-12 max-w-3xl"
+         x-data="{ i: 0, n: 3, autoplay: null,
+                   go(k){ this.i = (k + this.n) % this.n },
+                   start(){ this.autoplay = setInterval(()=>this.go(this.i+1), 6000) },
+                   stop(){ clearInterval(this.autoplay) } }"
+         x-init="start()" @mouseenter="stop()" @mouseleave="start()">
+
+      <div class="overflow-hidden rounded-3xl">
+        <div class="swipe-track" :style="`transform: translateX(-${i*100}%)`">
+
+          {# Slide 1 #}
+          <figure class="swipe-slide px-2">
+            <div class="glass rounded-3xl border border-white/15 bg-white/5 p-8 text-center md:p-10">
+              <svg class="mx-auto h-9 w-9 text-accent" fill="currentColor" viewBox="0 0 24 24"><path d="M7.17 6A5.17 5.17 0 0 0 2 11.17V18h6.83v-6.83H5.5A1.67 1.67 0 0 1 7.17 9.5V6zm10 0A5.17 5.17 0 0 0 12 11.17V18h6.83v-6.83H15.5a1.67 1.67 0 0 1 1.67-1.67V6z"/></svg>
+              <blockquote class="mt-5 text-lg leading-relaxed md:text-xl">
+                « J'achète mes pièces détachées à Lagos. Avant, je perdais une journée à courir après le cambiste.
+                Maintenant je paie mon fournisseur en deux minutes et je vois son nom avant d'envoyer. »
+              </blockquote>
+              <figcaption class="mt-6 flex items-center justify-center gap-3">
+                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-sm font-bold">RA</span>
+                <span class="text-left text-sm"><span class="block font-semibold">Rachidou A.</span><span class="text-white/60">Commerçant, Parakou</span></span>
+              </figcaption>
+            </div>
+          </figure>
+          {# Slide 2 #}
+          <figure class="swipe-slide px-2">
+            <div class="glass rounded-3xl border border-white/15 bg-white/5 p-8 text-center md:p-10">
+              <svg class="mx-auto h-9 w-9 text-accent" fill="currentColor" viewBox="0 0 24 24"><path d="M7.17 6A5.17 5.17 0 0 0 2 11.17V18h6.83v-6.83H5.5A1.67 1.67 0 0 1 7.17 9.5V6zm10 0A5.17 5.17 0 0 0 12 11.17V18h6.83v-6.83H15.5a1.67 1.67 0 0 1 1.67-1.67V6z"/></svg>
+              <blockquote class="mt-5 text-lg leading-relaxed md:text-xl">
+                « Ma fille étudie à Cotonou. Je lui envoie son argent depuis Abuja sans me déplacer,
+                et elle reçoit son FCFA sur MTN le jour même. »
+              </blockquote>
+              <figcaption class="mt-6 flex items-center justify-center gap-3">
+                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-sm font-bold">GO</span>
+                <span class="text-left text-sm"><span class="block font-semibold">Grace O.</span><span class="text-white/60">Maman, Abuja</span></span>
+              </figcaption>
+            </div>
+          </figure>
+          {# Slide 3 #}
+          <figure class="swipe-slide px-2">
+            <div class="glass rounded-3xl border border-white/15 bg-white/5 p-8 text-center md:p-10">
+              <svg class="mx-auto h-9 w-9 text-accent" fill="currentColor" viewBox="0 0 24 24"><path d="M7.17 6A5.17 5.17 0 0 0 2 11.17V18h6.83v-6.83H5.5A1.67 1.67 0 0 1 7.17 9.5V6zm10 0A5.17 5.17 0 0 0 12 11.17V18h6.83v-6.83H15.5a1.67 1.67 0 0 1 1.67-1.67V6z"/></svg>
+              <blockquote class="mt-5 text-lg leading-relaxed md:text-xl">
+                « Ce que j'apprécie, c'est qu'il n'y a pas de mauvaise surprise. Les frais sont écrits noir sur blanc
+                avant que je valide. Et quand j'ai une question, quelqu'un me répond sur WhatsApp. »
+              </blockquote>
+              <figcaption class="mt-6 flex items-center justify-center gap-3">
+                <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-sm font-bold">ED</span>
+                <span class="text-left text-sm"><span class="block font-semibold">Émile D.</span><span class="text-white/60">Importateur, Cotonou</span></span>
+              </figcaption>
+            </div>
+          </figure>
+
+        </div>
+      </div>
+
+      {# Contrôles : flèches + puces #}
+      <div class="mt-8 flex items-center justify-center gap-6">
+        <button @click="go(i-1)" aria-label="Précédent" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition hover:bg-white/10">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+        </button>
+        <div class="flex gap-2">
+          <template x-for="d in n" :key="d">
+            <button @click="go(d-1)" :aria-label="`Témoignage ${d}`"
+                    class="h-2.5 rounded-full transition-all"
+                    :class="i === d-1 ? 'w-7 bg-accent' : 'w-2.5 bg-white/30 hover:bg-white/50'"></button>
+          </template>
+        </div>
+        <button @click="go(i+1)" aria-label="Suivant" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition hover:bg-white/10">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ (aperçu accordéon) -->
+<section class="border-b border-gray-200 bg-soft">
+  <div class="container-x py-16 md:py-24">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-center text-3xl font-bold tracking-tight md:text-4xl">Questions fréquentes</h2>
+      <div class="mt-10 divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white" x-data="{open:0}">
+        {% include "components/_faq_item.html" with i=1 q="Combien de temps prend un transfert ?" a="La plupart des dépôts et retraits sont confirmés en quelques minutes. En cas de forte affluence chez un opérateur, cela peut prendre jusqu'à une heure." %}
+        {% include "components/_faq_item.html" with i=2 q="Quels sont les frais ?" a="Un pourcentage est appliqué à chaque échange, affiché clairement avant que vous validiez. Il n'y a aucun frais caché ni surcoût au retrait." %}
+        {% include "components/_faq_item.html" with i=3 q="Est-ce que mon argent est en sécurité ?" a="Tant que vous n'échangez pas, vos fonds restent dans votre portefeuille. Avant chaque transfert bancaire, le nom du bénéficiaire s'affiche pour éviter toute erreur." %}
+        {% include "components/_faq_item.html" with i=4 q="Dois-je vérifier mon identité ?" a="Le niveau 1 fonctionne dès l'inscription. Pour augmenter vos limites, vous pouvez passer au niveau 2 ou 3 en envoyant une pièce d'identité." %}
+      </div>
+      <p class="mt-8 text-center text-sm text-gray-secondary">
+        <a href="{% url 'core:faq' %}" class="font-semibold text-primary hover:underline">Voir les 10 questions →</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL + téléchargement app -->
+<section>
+  <div class="container-x py-20">
+    <div class="brand-gradient relative overflow-hidden rounded-[2rem] px-6 py-14 text-center text-white md:px-12 md:py-16">
+      <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10"></div>
+      <div class="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-white/10"></div>
+      <div class="relative">
+        <h2 class="text-3xl font-extrabold tracking-tight md:text-4xl">Prêt à échanger au vrai taux ?</h2>
+        <p class="mx-auto mt-4 max-w-xl text-lg text-white/85">
+          Créez votre compte gratuitement et faites votre première conversion aujourd'hui.
+          Bientôt aussi sur mobile.
+        </p>
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a href="{% url 'accounts:inscription' %}" class="inline-flex items-center justify-center rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-primary transition hover:bg-white/90">
+            Commencer maintenant
+          </a>
+          <div class="flex gap-3">
+            {# Boutons stores (bientôt disponibles) #}
+            <span class="inline-flex items-center gap-2 rounded-full border border-white/30 px-5 py-3 text-sm font-medium text-white/90">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 1.8 13 11.2 3.6 20.6c-.36-.2-.6-.58-.6-1.04V2.84c0-.46.24-.84.6-1.04zm10.9 10.9 2.74 2.74-9.3 5.36 6.56-8.1zM5.94 1.3l9.3 5.36-2.74 2.74L5.94 1.3zm12.1 7.5L21 10.6c.7.4.7 1.4 0 1.8l-2.96 1.7-3.04-3.05L18.04 8.8z"/></svg>
+              Google Play <span class="text-white/60">(bientôt)</span>
+            </span>
+            <span class="inline-flex items-center gap-2 rounded-full border border-white/30 px-5 py-3 text-sm font-medium text-white/90">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M16.37 1.43c.06.86-.28 1.7-.84 2.31-.58.63-1.5 1.11-2.4 1.04-.08-.83.31-1.7.83-2.25.58-.62 1.58-1.08 2.41-1.1zM19.5 17.1c-.43.99-.64 1.43-1.19 2.31-.77 1.22-1.86 2.74-3.2 2.75-1.2.01-1.51-.78-3.13-.77-1.62 0-1.96.78-3.16.78-1.34-.01-2.37-1.38-3.14-2.6-2.16-3.42-2.39-7.43-1.05-9.56.94-1.51 2.43-2.4 3.83-2.4 1.42 0 2.32.78 3.5.78 1.14 0 1.84-.78 3.49-.78 1.25 0 2.57.68 3.51 1.86-3.08 1.69-2.58 6.09.54 7.4z"/></svg>
+              App Store <span class="text-white/60">(bientôt)</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endwith %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function simulateur(rate, fee) {
+  return {
+    from: 'NGN',
+    amount: 100000,
+    rate: rate,   // 1 NGN = rate XOF
+    fee: fee,     // %
+    get gross() {
+      if (!this.amount || this.amount < 0) return 0;
+      return this.from === 'NGN' ? this.amount * this.rate : this.amount / this.rate;
+    },
+    get feeAmount() { return this.gross * this.fee / 100; },
+    get net() { return Math.max(this.gross - this.feeAmount, 0); },
+    swap() { this.from = this.from === 'NGN' ? 'XOF' : 'NGN'; },
+    swapCheck() {},
+    rateLabel() {
+      return this.from === 'NGN'
+        ? '1 NGN = ' + this.rate.toFixed(3) + ' XOF'
+        : '1 XOF = ' + (1/this.rate).toFixed(3) + ' NGN';
+    },
+    formatted(v) {
+      const cur = this.from === 'NGN' ? 'FCFA' : 'NGN';
+      return new Intl.NumberFormat('fr-FR', {maximumFractionDigits:0}).format(v) + ' ' + cur;
+    }
+  }
+}
+</script>
+{% endblock %}

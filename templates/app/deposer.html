@@ -1,0 +1,55 @@
+{% extends "app/_app_base.html" %}
+{% block title %}Déposer — GoChange{% endblock %}
+
+{% block app_content %}
+<div class="mx-auto max-w-xl">
+  <h1 class="text-2xl font-bold tracking-tight">Déposer de l'argent</h1>
+  <p class="mt-1 text-sm text-gray-secondary">Approvisionnez votre portefeuille en FCFA ou en Naira.</p>
+
+  {% if PAYMENTS_SIMULATION %}
+  <div class="mt-4 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+    Mode démonstration : aucun paiement réel n'est effectué. Le dépôt sera confirmé automatiquement pour vous permettre de tester.
+  </div>
+  {% endif %}
+
+  <form method="post" class="mt-6 space-y-5 rounded-2xl border border-gray-200 p-6"
+        x-data="{currency: '{{ form.currency.value|default:'XOF' }}'}">
+    {% csrf_token %}
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Devise à déposer</label>
+      <select name="currency" x-model="currency" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none">
+        <option value="XOF">FCFA (XOF) — Mobile Money</option>
+        <option value="NGN">Naira (NGN) — Carte / virement</option>
+      </select>
+    </div>
+
+    <div x-show="currency === 'XOF'" x-cloak>
+      <label class="mb-1.5 block text-sm font-medium">Opérateur Mobile Money</label>
+      <select name="operator" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none">
+        <option value="mtn">MTN MoMo</option>
+        <option value="moov">Moov Money</option>
+        <option value="celtiis">Celtiis Cash</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Montant</label>
+      <div class="relative">
+        <input type="number" name="amount" min="100" step="1" value="{{ form.amount.value|default:'' }}" required
+               class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none" placeholder="0">
+        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-secondary" x-text="currency"></span>
+      </div>
+      {% for error in form.amount.errors %}<p class="mt-1 text-sm text-red-600">{{ error }}</p>{% endfor %}
+      {% for error in form.operator.errors %}<p class="mt-1 text-sm text-red-600">{{ error }}</p>{% endfor %}
+    </div>
+
+    <button type="submit" class="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary-dark">
+      Continuer vers le paiement
+    </button>
+    <p class="text-center text-xs text-gray-secondary">
+      Votre solde est crédité uniquement après confirmation du paiement.
+    </p>
+  </form>
+</div>
+{% endblock %}

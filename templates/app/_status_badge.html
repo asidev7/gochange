@@ -1,0 +1,11 @@
+<span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium
+  {% if key == 'completed' %}bg-green-50 text-green-700
+  {% elif key == 'pending' or key == 'processing' %}bg-amber-50 text-amber-700
+  {% elif key == 'failed' %}bg-red-50 text-red-700
+  {% else %}bg-gray-100 text-gray-600{% endif %}">
+  <span class="h-1.5 w-1.5 rounded-full
+    {% if key == 'completed' %}bg-green-500
+    {% elif key == 'pending' or key == 'processing' %}bg-amber-500
+    {% elif key == 'failed' %}bg-red-500{% else %}bg-gray-400{% endif %}"></span>
+  {{ label }}
+</span>

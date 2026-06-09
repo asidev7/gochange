@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+Allow: /taux/
+Allow: /faq/
+Allow: /a-propos/
+Allow: /contact/
+Allow: /cgu/
+Allow: /confidentialite/
+Allow: /inscription/
+Allow: /connexion/
+
+Disallow: /dashboard/
+Disallow: /deposer/
+Disallow: /echanger/
+Disallow: /retirer/
+Disallow: /transactions/
+Disallow: /beneficiaires/
+Disallow: /profil/
+Disallow: /parametres/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /webhooks/
+
+Sitemap: {{ SITE_URL }}/sitemap.xml

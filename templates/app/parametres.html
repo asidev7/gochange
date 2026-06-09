@@ -1,0 +1,68 @@
+{% extends "app/_app_base.html" %}
+{% block title %}Paramètres — GoChange{% endblock %}
+
+{% block app_content %}
+<div class="mx-auto max-w-xl">
+  <h1 class="text-2xl font-bold tracking-tight">Paramètres</h1>
+
+  {# Préférences #}
+  <form method="post" class="mt-6 space-y-5 rounded-2xl border border-gray-200 p-6">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="prefs">
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Langue</label>
+      {{ form.language }}
+    </div>
+    <label class="flex items-center gap-3 text-sm">
+      {{ form.notify_email }}
+      <span>Recevoir les notifications par e-mail (confirmations, sécurité, nouveautés)</span>
+    </label>
+    <button class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark">Enregistrer</button>
+  </form>
+
+  {# Code PIN de transaction #}
+  <div class="mt-6 rounded-2xl border border-gray-200 p-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-sm font-semibold">Code PIN de transaction</h2>
+      {% if user.has_pin %}
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700"><span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>Activé</span>
+      {% else %}
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>Non défini</span>
+      {% endif %}
+    </div>
+    <p class="mt-2 text-sm text-gray-secondary">Un code à 4–6 chiffres demandé pour confirmer vos retraits. Ne le partagez jamais.</p>
+    <form method="post" class="mt-4 grid gap-4 sm:grid-cols-2">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="pin">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium">{{ pin_form.pin1.label }}</label>
+        {{ pin_form.pin1 }}
+        {% for e in pin_form.pin1.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium">{{ pin_form.pin2.label }}</label>
+        {{ pin_form.pin2 }}
+        {% for e in pin_form.pin2.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+      </div>
+      <div class="sm:col-span-2">
+        <button class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-dark">
+          {% if user.has_pin %}Changer mon code PIN{% else %}Définir mon code PIN{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  {# Suppression #}
+  <div class="mt-6 rounded-2xl border border-red-200 p-6">
+    <h2 class="text-sm font-semibold text-red-700">Supprimer mon compte</h2>
+    <p class="mt-2 text-sm text-gray-secondary">
+      Cette action est définitive. Votre portefeuille doit être vide (retirez vos fonds au préalable).
+    </p>
+    <form method="post" action="{% url 'accounts:supprimer_compte' %}" class="mt-4"
+          onsubmit="return confirm('Supprimer définitivement votre compte ? Cette action est irréversible.');">
+      {% csrf_token %}
+      <button class="rounded-full border border-red-300 px-5 py-2.5 text-sm font-semibold text-red-700 transition hover:bg-red-50">Supprimer mon compte</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

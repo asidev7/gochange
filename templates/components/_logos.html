@@ -1,0 +1,22 @@
+{% comment %}
+Bandeau des moyens de paiement — vrais logos chargés en ligne (Clearbit Logo API).
+Si une image ne charge pas, on bascule automatiquement sur un badge texte (onerror).
+Opérateurs Mobile Money (Bénin) + banques / fintechs nigérianes.
+{% endcomment %}
+<div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+
+  {% comment %} Opérateurs Mobile Money {% endcomment %}
+  {% include "components/_logo_badge.html" with name="MTN MoMo" domain="mtn.com" color="#FFCC00" dark=True %}
+  {% include "components/_logo_badge.html" with name="Moov Money" domain="moov-africa.com" color="#005BAA" %}
+  {% include "components/_logo_badge.html" with name="Celtiis" domain="celtiis.bj" color="#00853F" %}
+
+  {% comment %} Banques & fintechs nigérianes {% endcomment %}
+  {% include "components/_logo_badge.html" with name="GTBank" domain="gtbank.com" color="#DD7E1D" %}
+  {% include "components/_logo_badge.html" with name="Access" domain="accessbankplc.com" color="#E35205" %}
+  {% include "components/_logo_badge.html" with name="Zenith" domain="zenithbank.com" color="#E2231A" %}
+  {% include "components/_logo_badge.html" with name="UBA" domain="ubagroup.com" color="#D31145" %}
+  {% include "components/_logo_badge.html" with name="First Bank" domain="firstbanknigeria.com" color="#00529B" %}
+  {% include "components/_logo_badge.html" with name="Opay" domain="opayweb.com" color="#1DC295" %}
+  {% include "components/_logo_badge.html" with name="PalmPay" domain="palmpay.com" color="#6C3FB5" %}
+  {% include "components/_logo_badge.html" with name="Kuda" domain="kuda.com" color="#40196D" %}
+</div>

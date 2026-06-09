@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="border-b border-gray-200">
+  <div class="container-x py-16 md:py-20">
+    <div class="mx-auto max-w-3xl">
+      <h1 class="text-3xl font-bold tracking-tight md:text-4xl">Conditions générales d'utilisation</h1>
+      <p class="mt-4 text-sm text-gray-secondary">Dernière mise à jour : {% now "F Y" %}</p>
+
+      <div class="prose mt-10 max-w-none space-y-8 text-[15px] leading-relaxed text-gray-secondary">
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">1. Présentation</h2>
+          <p class="mt-3">GoChange (« la Plateforme ») est un service d'échange de devises entre le Naira nigérian (NGN) et le Franc CFA (XOF), édité par ASITECH SOLUTION, société immatriculée au Bénin et établie à Parakou. En créant un compte et en utilisant la Plateforme, vous acceptez sans réserve les présentes conditions.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">2. Inscription et compte</h2>
+          <p class="mt-3">L'ouverture d'un compte est gratuite et réservée aux personnes majeures. Vous vous engagez à fournir des informations exactes (nom, e-mail, téléphone) et à les tenir à jour. Vous êtes responsable de la confidentialité de votre mot de passe et de toute activité réalisée depuis votre compte. Prévenez-nous immédiatement en cas d'usage frauduleux.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">3. Vérification d'identité (KYC)</h2>
+          <p class="mt-3">Conformément à la réglementation applicable au Bénin et au Nigeria en matière de lutte contre le blanchiment, l'accès à certaines limites de transaction est conditionné à la vérification de votre identité. Trois niveaux existent :</p>
+          <ul class="mt-3 list-disc space-y-1 pl-6">
+            <li><span class="font-medium text-ink">Niveau 1</span> : e-mail et téléphone vérifiés — 50 000 FCFA de dépôt et de retrait par jour.</li>
+            <li><span class="font-medium text-ink">Niveau 2</span> : pièce d'identité et selfie validés — 500 000 FCFA par jour.</li>
+            <li><span class="font-medium text-ink">Niveau 3</span> : justificatif d'adresse ou registre de commerce — 2 000 000 FCFA par jour.</li>
+          </ul>
+          <p class="mt-3">Nous nous réservons le droit de demander des justificatifs complémentaires et de suspendre un compte en cas de doute légitime.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">4. Dépôts, échanges et retraits</h2>
+          <p class="mt-3">Les dépôts s'effectuent via nos prestataires de paiement (PayDunya pour le FCFA, Paystack pour le Naira). Un dépôt n'est crédité qu'après confirmation effective du paiement par le prestataire. Lors d'un échange, le taux est figé au moment de la validation : le montant affiché est celui que vous recevez. Les retraits sont exécutés vers le bénéficiaire que vous avez enregistré et confirmé.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">5. Taux et frais</h2>
+          <p class="mt-3">Le taux de change et les frais applicables sont affichés sur la Plateforme avant chaque opération. Les frais sont exprimés en pourcentage du montant échangé. Aucun frais n'est prélevé en dehors de ceux annoncés avant validation.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">6. Responsabilité du bénéficiaire</h2>
+          <p class="mt-3">Pour les retraits bancaires au Nigeria, le nom du titulaire du compte est affiché avant l'envoi et vous devez le confirmer. Une fois le transfert validé, GoChange ne peut être tenue responsable d'une erreur de numéro de compte saisi par vos soins et confirmé par vous.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">7. Usages interdits</h2>
+          <p class="mt-3">Il est interdit d'utiliser la Plateforme à des fins illégales, notamment le blanchiment de capitaux, le financement d'activités prohibées, ou l'usurpation d'identité. Tout manquement entraîne la suspension ou la fermeture du compte et, le cas échéant, un signalement aux autorités compétentes.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">8. Disponibilité du service</h2>
+          <p class="mt-3">Nous nous efforçons d'assurer un service continu, mais des interruptions peuvent survenir (maintenance, incident chez un prestataire de paiement, opérateur Mobile Money indisponible). GoChange ne saurait être tenue responsable des retards imputables à ces tiers.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">9. Modification des conditions</h2>
+          <p class="mt-3">Les présentes conditions peuvent évoluer. Toute modification importante vous sera notifiée par e-mail. La poursuite de l'utilisation de la Plateforme vaut acceptation des conditions mises à jour.</p>
+        </div>
+
+        <div>
+          <h2 class="text-lg font-bold text-ink">10. Droit applicable</h2>
+          <p class="mt-3">Les présentes conditions sont régies par le droit béninois. En cas de litige, et à défaut de résolution amiable, les tribunaux compétents de Parakou seront saisis. Pour toute question : contact@gochange.store.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

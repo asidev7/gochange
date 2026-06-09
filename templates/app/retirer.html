@@ -1,0 +1,61 @@
+{% extends "app/_app_base.html" %}
+{% load humanize %}
+{% block title %}Retirer — GoChange{% endblock %}
+
+{% block app_content %}
+<div class="mx-auto max-w-xl">
+  <h1 class="text-2xl font-bold tracking-tight">Retirer</h1>
+  <p class="mt-1 text-sm text-gray-secondary">Envoyez vos fonds vers un bénéficiaire enregistré.</p>
+
+  <div class="mt-4 grid gap-3 sm:grid-cols-2">
+    <div class="rounded-lg border border-gray-200 px-4 py-3 text-sm"><span class="text-gray-secondary">Solde XOF :</span> <span class="font-semibold">{{ wallet.balance_xof|floatformat:0|intcomma }} FCFA</span></div>
+    <div class="rounded-lg border border-gray-200 px-4 py-3 text-sm"><span class="text-gray-secondary">Solde NGN :</span> <span class="font-semibold">{{ wallet.balance_ngn|floatformat:0|intcomma }} NGN</span></div>
+  </div>
+
+  <form method="post" class="mt-6 space-y-5 rounded-2xl border border-gray-200 p-6"
+        x-data="{confirmed: false}">
+    {% csrf_token %}
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Bénéficiaire</label>
+      {{ form.beneficiary }}
+      {% for error in form.beneficiary.errors %}<p class="mt-1 text-sm text-red-600">{{ error }}</p>{% endfor %}
+      <p class="mt-2 text-xs text-gray-secondary">
+        <a href="{% url 'exchange:beneficiaires' %}" class="text-primary hover:underline">Gérer mes bénéficiaires</a>
+      </p>
+    </div>
+
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Montant à retirer</label>
+      {{ form.amount }}
+      {% for error in form.amount.errors %}<p class="mt-1 text-sm text-red-600">{{ error }}</p>{% endfor %}
+    </div>
+
+    <label class="flex items-start gap-2 rounded-lg border border-gray-200 bg-soft px-4 py-3 text-sm">
+      <input type="checkbox" name="confirm_beneficiary" x-model="confirmed" class="mt-0.5 h-4 w-4 rounded border-gray-300 text-primary">
+      <span class="text-gray-secondary">
+        <span class="font-medium text-ink">Je confirme le bénéficiaire.</span>
+        Vérifiez bien le nom du titulaire avant de valider : un transfert envoyé ne peut pas être annulé.
+      </span>
+    </label>
+
+    {% if user.has_pin %}
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Code PIN de transaction</label>
+      <input type="password" name="pin" inputmode="numeric" maxlength="6" autocomplete="off" required
+             class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-center text-[15px] font-semibold tracking-[0.5em] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+             placeholder="••••">
+      <p class="mt-1 text-xs text-gray-secondary">Saisissez votre code PIN pour confirmer ce retrait.</p>
+    </div>
+    {% else %}
+    <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+      Définissez d'abord un <a href="{% url 'accounts:parametres' %}" class="font-semibold underline">code PIN de transaction</a> pour pouvoir retirer.
+    </div>
+    {% endif %}
+
+    <button type="submit" :disabled="!confirmed" class="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-50">
+      Valider le retrait
+    </button>
+  </form>
+</div>
+{% endblock %}

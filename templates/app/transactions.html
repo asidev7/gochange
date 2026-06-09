@@ -1,0 +1,51 @@
+{% extends "app/_app_base.html" %}
+{% load humanize %}
+{% block title %}Transactions — GoChange{% endblock %}
+
+{% block app_content %}
+<div class="flex flex-wrap items-center justify-between gap-3">
+  <div>
+    <h1 class="text-2xl font-bold tracking-tight">Transactions</h1>
+    <p class="mt-1 text-sm text-gray-secondary">Historique complet de vos opérations.</p>
+  </div>
+  <a href="{% url 'exchange:transactions_csv' %}" class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:border-gray-400">
+    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+    Exporter en CSV
+  </a>
+</div>
+
+<!-- Filtres -->
+<div class="mt-6 flex flex-wrap gap-2">
+  <a href="?" class="rounded-lg border px-3 py-1.5 text-sm font-medium {% if not type_filter %}border-primary bg-primary text-white{% else %}border-gray-300 text-gray-secondary hover:border-gray-400{% endif %}">Tout</a>
+  <a href="?type=Dépôt" class="rounded-lg border px-3 py-1.5 text-sm font-medium {% if type_filter == 'Dépôt' %}border-primary bg-primary text-white{% else %}border-gray-300 text-gray-secondary hover:border-gray-400{% endif %}">Dépôts</a>
+  <a href="?type=Échange" class="rounded-lg border px-3 py-1.5 text-sm font-medium {% if type_filter == 'Échange' %}border-primary bg-primary text-white{% else %}border-gray-300 text-gray-secondary hover:border-gray-400{% endif %}">Échanges</a>
+  <a href="?type=Retrait" class="rounded-lg border px-3 py-1.5 text-sm font-medium {% if type_filter == 'Retrait' %}border-primary bg-primary text-white{% else %}border-gray-300 text-gray-secondary hover:border-gray-400{% endif %}">Retraits</a>
+</div>
+
+<div class="mt-4 overflow-hidden rounded-xl border border-gray-200">
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="bg-soft text-left text-gray-secondary">
+        <tr>
+          <th class="px-6 py-3 font-medium">Type</th>
+          <th class="px-6 py-3 font-medium">Montant</th>
+          <th class="px-6 py-3 font-medium">Statut</th>
+          <th class="px-6 py-3 font-medium">Date</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {% for r in rows %}
+        <tr>
+          <td class="px-6 py-3 font-medium">{{ r.type }}</td>
+          <td class="px-6 py-3">{{ r.amount|floatformat:0|intcomma }} {{ r.currency }}</td>
+          <td class="px-6 py-3">{% include "app/_status_badge.html" with key=r.status_key label=r.status %}</td>
+          <td class="px-6 py-3 text-gray-secondary">{{ r.date|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="px-6 py-8 text-center text-gray-secondary">Aucune transaction.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
