@@ -15,7 +15,7 @@ echo ">> dépendances"
 ./venv/bin/pip install -r requirements.txt
 
 echo ">> migrations + statiques"
-set -a; source .env; set +a
+# Pas de `source .env` : settings.py charge le .env via python-dotenv.
 ./venv/bin/python manage.py migrate --noinput
 ./venv/bin/python manage.py collectstatic --noinput
 

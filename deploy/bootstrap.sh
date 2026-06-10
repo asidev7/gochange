@@ -40,7 +40,7 @@ if [ ! -f "$APP_DIR/.env" ]; then
 fi
 
 echo ">> Migrations, seed, statiques"
-set -a; source .env; set +a
+# settings.py charge le .env via python-dotenv (pas de `source .env`).
 ./venv/bin/python manage.py migrate --noinput
 ./venv/bin/python manage.py seed
 ./venv/bin/python manage.py collectstatic --noinput
