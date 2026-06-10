@@ -54,8 +54,9 @@ def dashboard(request):
     rate = ExchangeRate.current()
     lim = limits.limits_summary(request.user)
 
-    recent = _recent_activity(request.user, limit=10)
+    recent = _recent_activity(request.user, limit=8)
     chart = _exchange_volume_chart(request.user, days=30)
+    month_volume = sum(chart["values"])
 
     alerts = []
     if request.user.kyc.level < 2:
@@ -69,6 +70,7 @@ def dashboard(request):
         "limits": lim,
         "recent": recent,
         "chart_json": json.dumps(chart),
+        "month_volume": month_volume,
         "alerts": alerts,
         "active": "dashboard",
     })

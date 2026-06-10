@@ -3,10 +3,9 @@
   <div class="container-x py-16">
     <div class="grid gap-10 md:grid-cols-4">
       <div>
-        <div class="flex items-center gap-2.5">
-          <span class="logo-badge flex h-9 w-9 items-center justify-center rounded-xl font-extrabold text-white">G</span>
-          <span class="text-lg font-extrabold tracking-tight">GoChange</span>
-        </div>
+        <a href="{% url 'core:landing' %}" class="inline-flex">
+          <img src="{% static 'img/logo-white.svg' %}" alt="{{ SITE_NAME }}" class="h-8 w-auto">
+        </a>
         <p class="mt-4 text-sm leading-relaxed text-white/70">
           Le change Naira ⇄ FCFA, simple et honnête, pour le corridor Bénin–Nigeria.
         </p>

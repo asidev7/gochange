@@ -1,152 +1,148 @@
 {% extends "app/_app_base.html" %}
 {% load humanize %}
-
 {% block title %}Tableau de bord — GoChange{% endblock %}
 
 {% block app_content %}
-<div class="flex flex-wrap items-center justify-between gap-3">
-  <div>
-    <h1 class="text-2xl font-bold tracking-tight">Bonjour, {{ user.display_name }} 👋</h1>
-    <p class="mt-1 text-sm text-gray-secondary">Voici l'état de votre compte aujourd'hui.</p>
-  </div>
-  <span class="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary">{{ user.kyc.level_label }}</span>
-</div>
+<div class="space-y-6 gc-fade-up">
 
-{% if alerts %}
-<div class="mt-6 space-y-2">
-  {% for alert in alerts %}
-  <div class="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-    <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
-    <span>{{ alert }}</span>
+  {% if alerts %}
+  <div class="space-y-2">
+    {% for alert in alerts %}
+    <div class="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+      <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+      <span>{{ alert }}</span>
+    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-</div>
-{% endif %}
+  {% endif %}
 
-<!-- Carte solde principale (style app) -->
-<div class="mt-6 grid gap-4 lg:grid-cols-3">
-  <div class="brand-gradient relative overflow-hidden rounded-3xl p-6 text-white lg:col-span-2"
-       x-data="{show:true}">
-    <div class="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10"></div>
-    <div class="pointer-events-none absolute -bottom-12 -left-6 h-40 w-40 rounded-full bg-white/10"></div>
-    <div class="relative flex items-start justify-between">
-      <p class="text-sm font-medium text-white/80">Solde total disponible</p>
-      <button @click="show=!show" class="text-white/80 hover:text-white" aria-label="Afficher / masquer">
-        <svg x-show="show" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/></svg>
-        <svg x-show="show===false" x-cloak class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.88 9.88"/></svg>
-      </button>
-    </div>
-    <div class="relative mt-2">
-      <p class="text-3xl font-extrabold tracking-tight md:text-4xl">
-        <span x-show="show">{{ wallet.balance_xof|floatformat:0|intcomma }} <span class="text-xl font-bold text-white/80">FCFA</span></span>
-        <span x-show="show===false" x-cloak>•••••• <span class="text-xl font-bold text-white/80">FCFA</span></span>
-      </p>
-      <p class="mt-1 text-sm text-white/80">
-        <span x-show="show">+ {{ wallet.balance_ngn|floatformat:0|intcomma }} NGN</span>
-        <span x-show="show===false" x-cloak>+ •••••• NGN</span>
-      </p>
-    </div>
-    <div class="relative mt-6 flex flex-wrap gap-2">
-      <a href="{% url 'exchange:deposer' %}" class="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary transition hover:bg-white/90">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m0 0 6.75-6.75M12 19.5l-6.75-6.75"/></svg>Déposer
-      </a>
-      <a href="{% url 'exchange:echanger' %}" class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>Échanger
-      </a>
-      <a href="{% url 'exchange:transferer' %}" class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.27 3.27a.75.75 0 0 1 .98-.98l16.5 8.25a.75.75 0 0 1 0 1.32L4.25 21.71a.75.75 0 0 1-.98-.98L6 12zm0 0h6"/></svg>Envoyer
-      </a>
-      <a href="{% url 'exchange:retirer' %}" class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19.5v-15m0 0L5.25 11.25M12 4.5l6.75 6.75"/></svg>Retirer
-      </a>
-    </div>
-  </div>
+  <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
 
-  {# Sous-soldes #}
-  <div class="grid gap-4">
-    <div class="rounded-2xl border border-gray-200 p-5">
-      <p class="text-sm text-gray-secondary">Solde FCFA (XOF)</p>
-      <p class="mt-1 text-2xl font-bold">{{ wallet.balance_xof|floatformat:0|intcomma }} <span class="text-base text-gray-secondary">FCFA</span></p>
-    </div>
-    <div class="rounded-2xl border border-gray-200 p-5">
-      <p class="text-sm text-gray-secondary">Solde Naira (NGN)</p>
-      <p class="mt-1 text-2xl font-bold">{{ wallet.balance_ngn|floatformat:0|intcomma }} <span class="text-base text-gray-secondary">NGN</span></p>
-    </div>
-  </div>
-</div>
-
-<!-- Taux + KYC -->
-<div class="mt-4 grid gap-4 lg:grid-cols-3">
-  <div class="rounded-xl border border-gray-200 p-6">
-    <p class="text-sm text-gray-secondary">Taux du jour</p>
-    {% if rate %}
-    <p class="mt-2 text-xl font-bold">1 NGN = {{ rate.xof_per_ngn|floatformat:3 }} XOF</p>
-    <p class="mt-1 text-sm text-gray-secondary">Frais d'échange : {{ rate.fee_percent }} %</p>
-    {% else %}
-    <p class="mt-2 text-sm text-gray-secondary">Indisponible</p>
-    {% endif %}
-  </div>
-
-  <div class="rounded-xl border border-gray-200 p-6 lg:col-span-2">
-    <div class="flex items-center justify-between">
-      <p class="text-sm font-semibold">Niveau {{ limits.level }} — limites du jour</p>
-      <a href="{% url 'accounts:profil' %}" class="text-sm font-medium text-primary hover:underline">Augmenter mes limites</a>
-    </div>
-    <div class="mt-4 space-y-4">
-      <div>
-        <div class="flex justify-between text-xs text-gray-secondary">
-          <span>Dépôts</span>
-          <span>{{ limits.deposit_used|floatformat:0|intcomma }} / {{ limits.deposit_cap|floatformat:0|intcomma }} FCFA</span>
-        </div>
-        <div class="progress-track mt-1.5 h-2"><div class="progress-fill" style="width: {{ limits.deposit_pct }}%"></div></div>
+    <!-- ====== Carte principale : aperçu du solde ====== -->
+    <section class="rounded-2xl border border-gray-100 bg-white p-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold">Aperçu du solde</h2>
+        <select class="gc-select rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-secondary focus:outline-none">
+          <option>30 derniers jours</option>
+          <option>7 derniers jours</option>
+        </select>
       </div>
-      <div>
-        <div class="flex justify-between text-xs text-gray-secondary">
-          <span>Retraits</span>
-          <span>{{ limits.withdraw_used|floatformat:0|intcomma }} / {{ limits.withdraw_cap|floatformat:0|intcomma }} FCFA</span>
+
+      <div class="mt-5 grid gap-6 md:grid-cols-2">
+        <div>
+          <p class="font-display text-5xl font-extrabold tracking-tight">{{ wallet.balance_xof|floatformat:0|intcomma }}<span class="ml-1 align-middle text-lg font-bold text-gray-secondary">FCFA</span></p>
+          <div class="mt-4 flex items-center gap-2.5">
+            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125z"/></svg>
+            </span>
+            <div class="text-sm leading-tight">
+              <p class="font-semibold">Solde total disponible</p>
+              <p class="text-gray-secondary">+ {{ wallet.balance_ngn|floatformat:0|intcomma }} NGN</p>
+            </div>
+          </div>
+          <p class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600">
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"/></svg>
+            Taux du jour : 1 NGN = {{ rate.xof_per_ngn|default:0|floatformat:3 }} XOF
+          </p>
         </div>
-        <div class="progress-track mt-1.5 h-2"><div class="progress-fill" style="width: {{ limits.withdraw_pct }}%"></div></div>
+
+        <div>
+          <canvas id="balChart" height="150"></canvas>
+        </div>
       </div>
+
+      <!-- Tuiles statistiques -->
+      <div class="mt-6 grid gap-4 sm:grid-cols-3">
+        <div class="rounded-xl border border-gray-100 p-4">
+          <p class="flex items-center gap-1.5 text-xs font-medium text-gray-secondary"><span class="h-2 w-2 rounded-full bg-indigo-500"></span>Solde FCFA</p>
+          <p class="mt-1 text-xl font-bold">{{ wallet.balance_xof|floatformat:0|intcomma }}</p>
+          <div class="mt-2 h-1 rounded-full bg-indigo-500/70"></div>
+        </div>
+        <div class="rounded-xl border border-gray-100 p-4">
+          <p class="flex items-center gap-1.5 text-xs font-medium text-gray-secondary"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Solde Naira</p>
+          <p class="mt-1 text-xl font-bold">{{ wallet.balance_ngn|floatformat:0|intcomma }}</p>
+          <div class="mt-2 h-1 rounded-full bg-emerald-500/70"></div>
+        </div>
+        <div class="rounded-xl border border-gray-100 p-4">
+          <p class="flex items-center gap-1.5 text-xs font-medium text-gray-secondary"><span class="h-2 w-2 rounded-full bg-primary"></span>Reste aujourd'hui</p>
+          <p class="mt-1 text-xl font-bold">{{ limits.deposit_remaining|floatformat:0|intcomma }}</p>
+          <div class="mt-2 h-1 rounded-full bg-primary/70"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Colonne droite ====== -->
+    <div class="space-y-6">
+      <section class="rounded-2xl border border-gray-100 bg-white p-6 text-center">
+        <p class="text-sm font-semibold text-gray-secondary">Volume échangé ce mois</p>
+        <p class="mt-2 font-display text-4xl font-extrabold text-primary">{{ month_volume|floatformat:0|intcomma }}</p>
+        <p class="mt-1 text-xs text-gray-secondary">équivalent FCFA, 30 derniers jours</p>
+        <a href="{% url 'exchange:retirer' %}" class="mt-4 inline-block text-sm font-semibold text-primary hover:underline">Retirer mes fonds →</a>
+      </section>
+
+      <section class="rounded-2xl border border-gray-100 bg-white p-6">
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-bold">Limites du jour</p>
+          <a href="{% url 'accounts:profil' %}" class="text-xs font-semibold text-primary hover:underline">Augmenter</a>
+        </div>
+        <div class="mt-4 space-y-4">
+          <div>
+            <div class="flex justify-between text-xs text-gray-secondary"><span>Dépôts</span><span>{{ limits.deposit_used|floatformat:0|intcomma }} / {{ limits.deposit_cap|floatformat:0|intcomma }}</span></div>
+            <div class="progress-track mt-1.5 h-2"><div class="progress-fill" style="width: {{ limits.deposit_pct }}%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-gray-secondary"><span>Retraits</span><span>{{ limits.withdraw_used|floatformat:0|intcomma }} / {{ limits.withdraw_cap|floatformat:0|intcomma }}</span></div>
+            <div class="progress-track mt-1.5 h-2"><div class="progress-fill" style="width: {{ limits.withdraw_pct }}%"></div></div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
-</div>
 
-<!-- Graphique 30 jours -->
-<div class="mt-4 rounded-xl border border-gray-200 p-6">
-  <p class="text-sm font-semibold">Volume échangé — 30 derniers jours (équivalent FCFA)</p>
-  <canvas id="volChart" height="90" class="mt-4"></canvas>
-</div>
-
-<!-- Dernières transactions -->
-<div class="mt-4 rounded-xl border border-gray-200">
-  <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-    <p class="text-sm font-semibold">10 dernières transactions</p>
-    <a href="{% url 'exchange:transactions' %}" class="text-sm font-medium text-primary hover:underline">Tout voir</a>
-  </div>
-  <div class="overflow-x-auto">
-    <table class="w-full text-sm">
-      <thead class="text-left text-gray-secondary">
-        <tr>
-          <th class="px-6 py-3 font-medium">Type</th>
-          <th class="px-6 py-3 font-medium">Montant</th>
-          <th class="px-6 py-3 font-medium">Statut</th>
-          <th class="px-6 py-3 font-medium">Date</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200">
-        {% for r in recent %}
-        <tr>
-          <td class="px-6 py-3 font-medium">{{ r.type }}</td>
-          <td class="px-6 py-3">{{ r.amount|floatformat:0|intcomma }} {{ r.currency }}</td>
-          <td class="px-6 py-3">{% include "app/_status_badge.html" with key=r.status_key label=r.status %}</td>
-          <td class="px-6 py-3 text-gray-secondary">{{ r.date|date:"d/m/Y H:i" }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="4" class="px-6 py-8 text-center text-gray-secondary">Aucune transaction pour l'instant. Commencez par un dépôt.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  <!-- ====== Table des transactions ====== -->
+  <section class="rounded-2xl border border-gray-100 bg-white">
+    <div class="flex flex-wrap items-center justify-between gap-3 p-5">
+      <h2 class="text-base font-bold">Transactions récentes</h2>
+      <div class="flex items-center gap-2">
+        <a href="{% url 'exchange:transactions_csv' %}" class="rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-gray-secondary transition hover:border-gray-300">Exporter</a>
+        <a href="{% url 'exchange:transactions' %}" class="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark">Tout voir</a>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="border-y border-gray-100 text-left text-xs uppercase tracking-wide text-gray-400">
+          <tr>
+            <th class="px-5 py-3 font-semibold">Opération</th>
+            <th class="px-5 py-3 font-semibold">Montant</th>
+            <th class="px-5 py-3 font-semibold">Statut</th>
+            <th class="px-5 py-3 font-semibold">Date</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          {% for r in recent %}
+          <tr class="hover:bg-soft/50">
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-soft text-primary">
+                  {% if r.type == 'Dépôt' %}{% include "app/_icon.html" with icon='down' cls='h-4 w-4' %}
+                  {% elif r.type == 'Échange' %}{% include "app/_icon.html" with icon='swap' cls='h-4 w-4' %}
+                  {% elif r.type == 'Retrait' %}{% include "app/_icon.html" with icon='up' cls='h-4 w-4' %}
+                  {% else %}{% include "app/_icon.html" with icon='send' cls='h-4 w-4' %}{% endif %}
+                </span>
+                <div><p class="font-semibold">{{ r.type }}</p><p class="text-xs text-gray-secondary">{{ r.currency }}</p></div>
+              </div>
+            </td>
+            <td class="px-5 py-3 font-semibold">{{ r.amount|floatformat:0|intcomma }} {{ r.currency }}</td>
+            <td class="px-5 py-3">{% include "app/_status_badge.html" with key=r.status_key label=r.status %}</td>
+            <td class="px-5 py-3 text-gray-secondary">{{ r.date|date:"d/m/Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="px-5 py-10 text-center text-gray-secondary">Aucune transaction. Commencez par recharger votre compte.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
 </div>
 {% endblock %}
 
@@ -154,22 +150,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
   const data = {{ chart_json|safe }};
-  new Chart(document.getElementById('volChart'), {
-    type: 'line',
-    data: {
-      labels: data.labels.map(d => d.slice(5)),
-      datasets: [{
-        data: data.values,
-        borderColor: '#0048AE',
-        backgroundColor: 'rgba(0,72,174,0.06)',
-        fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2,
-      }]
-    },
+  const labels = data.labels.map(d => d.slice(5));
+  // alterne deux nuances de bleu comme la maquette
+  const colors = data.values.map((_, i) => i % 2 ? '#BBD3FF' : '#0066FF');
+  new Chart(document.getElementById('balChart'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: data.values, backgroundColor: colors, borderRadius: 6, maxBarThickness: 14 }] },
     options: {
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { display: false }, ticks: { maxTicksLimit: 8, color: '#6B7280' } },
-        y: { grid: { color: '#F3F4F6' }, ticks: { color: '#6B7280' }, beginAtZero: true }
+        x: { grid: { display: false }, ticks: { maxTicksLimit: 6, color: '#94A3B8', font: { size: 10 } } },
+        y: { grid: { color: '#F1F5F9' }, ticks: { color: '#94A3B8', font: { size: 10 }, maxTicksLimit: 4 }, beginAtZero: true }
       }
     }
   });

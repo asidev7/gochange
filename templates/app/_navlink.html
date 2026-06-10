@@ -1,5 +1,7 @@
 <a href="{% url url %}"
-   class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition {% if a == key %}bg-primary text-white{% else %}text-gray-secondary hover:bg-soft hover:text-ink{% endif %}">
-  {% include "app/_icon.html" with icon=icon cls="h-4 w-4" %}
+   class="group flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition {% if a == key %}bg-primary text-white shadow-sm shadow-primary/30{% else %}text-gray-secondary hover:bg-soft hover:text-ink{% endif %}">
+  <span class="flex h-8 w-8 items-center justify-center rounded-lg {% if a == key %}bg-white/20 text-white{% else %}bg-soft text-gray-secondary group-hover:bg-white{% endif %}">
+    {% include "app/_icon.html" with icon=icon cls="h-4 w-4" %}
+  </span>
   {{ label }}
 </a>
