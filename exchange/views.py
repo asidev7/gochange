@@ -129,7 +129,7 @@ def deposer(request):
         ok, msg, _ = limits.check_deposit_limit(request.user, amount, currency)
         if not ok:
             messages.error(request, msg)
-            return render(request, "app/deposer.html", {"form": form, "active": "deposer"})
+            return render(request, "app/deposer.html", {"form": form, "active": "argent"})
 
         if currency == XOF:
             provider = (Deposit.PROVIDER_FEDAPAY
@@ -158,11 +158,11 @@ def deposer(request):
             deposit.status = Deposit.STATUS_FAILED
             deposit.save(update_fields=["status"])
             messages.error(request, str(exc))
-            return render(request, "app/deposer.html", {"form": form, "active": "deposer"})
+            return render(request, "app/deposer.html", {"form": form, "active": "argent"})
 
         return redirect(deposit.checkout_url)
 
-    return render(request, "app/deposer.html", {"form": form, "active": "deposer"})
+    return render(request, "app/deposer.html", {"form": form, "active": "argent"})
 
 
 @login_required
@@ -383,7 +383,7 @@ def transferer(request):
                 return redirect("exchange:dashboard")
 
     return render(request, "app/transferer.html", {
-        "form": form, "wallet": wallet, "active": "transferer",
+        "form": form, "wallet": wallet, "active": "argent",
     })
 
 
@@ -414,7 +414,7 @@ def transactions(request):
     if type_filter in {"Dépôt", "Échange", "Retrait"}:
         rows = [r for r in rows if r["type"] == type_filter]
     return render(request, "app/transactions.html", {
-        "rows": rows, "type_filter": type_filter, "active": "transactions",
+        "rows": rows, "type_filter": type_filter, "active": "activite",
     })
 
 
@@ -458,7 +458,7 @@ def beneficiaires(request):
     return render(request, "app/beneficiaires.html", {
         "beneficiaires": request.user.beneficiaries.all(),
         "momo_form": momo_form, "bank_form": bank_form,
-        "banks": paystack.list_banks(), "active": "beneficiaires",
+        "banks": paystack.list_banks(), "active": "activite",
     })
 
 

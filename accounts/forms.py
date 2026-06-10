@@ -102,7 +102,7 @@ class ProfilForm(forms.ModelForm):
             "first_name": forms.TextInput(attrs={"class": INPUT}),
             "last_name": forms.TextInput(attrs={"class": INPUT}),
             "phone": forms.TextInput(attrs={"class": INPUT}),
-            "country": forms.Select(attrs={"class": INPUT}, choices=[("BJ", "Bénin"), ("NG", "Nigeria")]),
+            "country": forms.Select(attrs={"class": INPUT}, choices=[("BJ", "🇧🇯 Bénin"), ("NG", "🇳🇬 Nigeria")]),
         }
 
 

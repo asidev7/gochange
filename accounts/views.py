@@ -153,7 +153,7 @@ def profil(request):
     return render(
         request,
         "app/profil.html",
-        {"form": form, "kyc": kyc, "limits": limits, "active": "profil"},
+        {"form": form, "kyc": kyc, "limits": limits, "active": "compte"},
     )
 
 
@@ -166,7 +166,7 @@ def changer_mot_de_passe(request):
         update_session_auth_hash(request, request.user)
         messages.success(request, "Mot de passe modifié.")
         return redirect("accounts:profil")
-    return render(request, "app/changer_mot_de_passe.html", {"form": form, "active": "profil"})
+    return render(request, "app/changer_mot_de_passe.html", {"form": form, "active": "compte"})
 
 
 @login_required
@@ -205,7 +205,7 @@ def kyc_upgrade(request):
     return render(
         request,
         "app/kyc.html",
-        {"form": form, "kyc": kyc, "target_level": target_level, "active": "profil"},
+        {"form": form, "kyc": kyc, "target_level": target_level, "active": "compte"},
     )
 
 
@@ -233,7 +233,7 @@ def parametres(request):
             return redirect("accounts:parametres")
 
     return render(request, "app/parametres.html", {
-        "form": form, "pin_form": pin_form, "active": "parametres",
+        "form": form, "pin_form": pin_form, "active": "compte",
     })
 
 

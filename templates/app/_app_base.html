@@ -48,19 +48,14 @@
     {# ---- Sidebar (carte blanche, icônes en carré arrondi) ---- #}
     <aside class="hidden w-60 shrink-0 lg:block">
       <div class="sticky top-24 rounded-2xl border border-gray-100 bg-white p-3">
-        <p class="px-3 pb-2 pt-1 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Mon compte</p>
+        <p class="px-3 pb-2 pt-1 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Menu</p>
         {% with a=active %}
         {% include "app/_navlink.html" with url='exchange:dashboard' key='dashboard' label='Tableau de bord' icon='grid' %}
-        {% include "app/_navlink.html" with url='exchange:deposer' key='deposer' label='Recharger' icon='down' %}
+        {% include "app/_navlink.html" with url='exchange:deposer' key='argent' label='Recharger & Envoyer' icon='send' %}
         {% include "app/_navlink.html" with url='exchange:echanger' key='echanger' label='Échanger' icon='swap' %}
-        {% include "app/_navlink.html" with url='exchange:transferer' key='transferer' label='Transférer' icon='send' %}
         {% include "app/_navlink.html" with url='exchange:retirer' key='retirer' label='Retirer' icon='up' %}
-
-        <p class="px-3 pb-2 pt-4 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Suivi</p>
-        {% include "app/_navlink.html" with url='exchange:transactions' key='transactions' label='Transactions' icon='list' %}
-        {% include "app/_navlink.html" with url='exchange:beneficiaires' key='beneficiaires' label='Bénéficiaires' icon='users' %}
-        {% include "app/_navlink.html" with url='accounts:profil' key='profil' label='Profil & KYC' icon='user' %}
-        {% include "app/_navlink.html" with url='accounts:parametres' key='parametres' label='Paramètres' icon='cog' %}
+        {% include "app/_navlink.html" with url='exchange:transactions' key='activite' label='Activité' icon='list' %}
+        {% include "app/_navlink.html" with url='accounts:profil' key='compte' label='Compte' icon='user' %}
         {% endwith %}
       </div>
     </aside>
@@ -76,10 +71,10 @@
   <div class="grid grid-cols-5">
     {% with a=active %}
     {% include "app/_bottomlink.html" with url='exchange:dashboard' key='dashboard' label='Accueil' icon='grid' %}
-    {% include "app/_bottomlink.html" with url='exchange:deposer' key='deposer' label='Recharger' icon='down' %}
-    {% include "app/_bottomlink.html" with url='exchange:transferer' key='transferer' label='Envoyer' icon='send' %}
-    {% include "app/_bottomlink.html" with url='exchange:transactions' key='transactions' label='Activité' icon='list' %}
-    {% include "app/_bottomlink.html" with url='accounts:profil' key='profil' label='Profil' icon='user' %}
+    {% include "app/_bottomlink.html" with url='exchange:deposer' key='argent' label='Recharger' icon='send' %}
+    {% include "app/_bottomlink.html" with url='exchange:echanger' key='echanger' label='Échanger' icon='swap' %}
+    {% include "app/_bottomlink.html" with url='exchange:transactions' key='activite' label='Activité' icon='list' %}
+    {% include "app/_bottomlink.html" with url='accounts:profil' key='compte' label='Compte' icon='user' %}
     {% endwith %}
   </div>
 </nav>

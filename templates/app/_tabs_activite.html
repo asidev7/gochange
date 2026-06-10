@@ -1,0 +1,4 @@
+<div class="mb-6 inline-flex gap-1 rounded-2xl border border-gray-100 bg-white p-1">
+  <a href="{% url 'exchange:transactions' %}" class="rounded-xl px-4 py-2 text-sm font-semibold transition {% if tab == 'transactions' %}bg-primary text-white{% else %}text-gray-secondary hover:bg-soft{% endif %}">Transactions</a>
+  <a href="{% url 'exchange:beneficiaires' %}" class="rounded-xl px-4 py-2 text-sm font-semibold transition {% if tab == 'beneficiaires' %}bg-primary text-white{% else %}text-gray-secondary hover:bg-soft{% endif %}">Bénéficiaires</a>
+</div>
