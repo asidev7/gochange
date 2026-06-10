@@ -212,6 +212,11 @@ PAYDUNYA_MODE = env("PAYDUNYA_MODE", "test")  # test | live
 PAYSTACK_SECRET_KEY = env("PAYSTACK_SECRET_KEY", "")
 PAYSTACK_PUBLIC_KEY = env("PAYSTACK_PUBLIC_KEY", "")
 
+# FedaPay (recharge XOF — Bénin)
+FEDAPAY_SECRET_KEY = env("FEDAPAY_SECRET_KEY", "")
+FEDAPAY_PUBLIC_KEY = env("FEDAPAY_PUBLIC_KEY", "")
+FEDAPAY_MODE = env("FEDAPAY_MODE", "live")  # live | sandbox
+
 # Mode simulation : aucun appel réseau réel, crédit via webhook simulé.
 PAYMENTS_SIMULATION = not (PAYDUNYA_MASTER_KEY and PAYSTACK_SECRET_KEY)
 

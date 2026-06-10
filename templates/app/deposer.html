@@ -2,9 +2,9 @@
 {% block title %}Déposer — GoChange{% endblock %}
 
 {% block app_content %}
-<div class="mx-auto max-w-xl">
-  <h1 class="text-2xl font-bold tracking-tight">Déposer de l'argent</h1>
-  <p class="mt-1 text-sm text-gray-secondary">Approvisionnez votre portefeuille en FCFA ou en Naira.</p>
+<div class="mx-auto max-w-xl gc-fade-up">
+  <h1 class="text-2xl font-bold tracking-tight">Recharger mon compte</h1>
+  <p class="mt-1 text-sm text-gray-secondary">Approvisionnez votre portefeuille en FCFA (Mobile Money) ou en Naira.</p>
 
   {% if PAYMENTS_SIMULATION %}
   <div class="mt-4 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
@@ -13,24 +13,33 @@
   {% endif %}
 
   <form method="post" class="mt-6 space-y-5 rounded-2xl border border-gray-200 p-6"
-        x-data="{currency: '{{ form.currency.value|default:'XOF' }}'}">
+        x-data="{currency: '{{ form.currency.value|default:'XOF' }}', provider: '{{ form.xof_provider.value|default:'paydunya' }}'}">
     {% csrf_token %}
 
     <div>
-      <label class="mb-1.5 block text-sm font-medium">Devise à déposer</label>
-      <select name="currency" x-model="currency" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none">
+      <label class="mb-1.5 block text-sm font-medium">Devise à recharger</label>
+      <select name="currency" x-model="currency" class="gc-select w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none">
         <option value="XOF">FCFA (XOF) — Mobile Money</option>
         <option value="NGN">Naira (NGN) — Carte / virement</option>
       </select>
     </div>
 
-    <div x-show="currency === 'XOF'" x-cloak>
-      <label class="mb-1.5 block text-sm font-medium">Opérateur Mobile Money</label>
-      <select name="operator" class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none">
-        <option value="mtn">MTN MoMo</option>
-        <option value="moov">Moov Money</option>
-        <option value="celtiis">Celtiis Cash</option>
-      </select>
+    <div x-show="currency === 'XOF'" x-cloak class="space-y-4">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium">Moyen de recharge (FCFA)</label>
+        <select name="xof_provider" x-model="provider" class="gc-select w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none">
+          <option value="paydunya">PayDunya</option>
+          <option value="fedapay">FedaPay</option>
+        </select>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium">Opérateur Mobile Money</label>
+        <select name="operator" class="gc-select w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none">
+          <option value="mtn">MTN MoMo</option>
+          <option value="moov">Moov Money</option>
+          <option value="celtiis">Celtiis Cash</option>
+        </select>
+      </div>
     </div>
 
     <div>
@@ -44,7 +53,7 @@
       {% for error in form.operator.errors %}<p class="mt-1 text-sm text-red-600">{{ error }}</p>{% endfor %}
     </div>
 
-    <button type="submit" class="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary-dark">
+    <button type="submit" class="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">
       Continuer vers le paiement
     </button>
     <p class="text-center text-xs text-gray-secondary">

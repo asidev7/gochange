@@ -11,6 +11,7 @@ urlpatterns = [
     path("deposer/retour/<str:reference>/", views.depot_retour, name="depot_retour"),
     path("echanger/", views.echanger, name="echanger"),
     path("retirer/", views.retirer, name="retirer"),
+    path("transferer/", views.transferer, name="transferer"),
     path("transactions/", views.transactions, name="transactions"),
     path("transactions/export.csv", views.transactions_csv, name="transactions_csv"),
     path("beneficiaires/", views.beneficiaires, name="beneficiaires"),

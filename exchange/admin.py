@@ -6,6 +6,7 @@ from .models import (
     Deposit,
     ExchangeRate,
     ExchangeTransaction,
+    InternalTransfer,
     WebhookLog,
     Withdrawal,
 )
@@ -63,6 +64,14 @@ class WithdrawalAdmin(admin.ModelAdmin):
                 wd.failure_reason = msg
             wd.save()
         self.message_user(request, f"{ok_count} retrait(s) décaissé(s).", messages.SUCCESS)
+
+
+@admin.register(InternalTransfer)
+class InternalTransferAdmin(admin.ModelAdmin):
+    list_display = ("reference", "sender", "recipient", "amount", "currency", "created_at")
+    search_fields = ("reference", "sender__email", "recipient__email", "sender__account_code", "recipient__account_code")
+    list_filter = ("currency",)
+    readonly_fields = [f.name for f in InternalTransfer._meta.fields]
 
 
 @admin.register(WebhookLog)

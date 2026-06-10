@@ -32,7 +32,7 @@ from .models import (
     WebhookLog,
     Withdrawal,
 )
-from .services import limits, paydunya, paystack
+from .services import fedapay, limits, paydunya, paystack
 
 
 def _email_required(request):
@@ -85,6 +85,12 @@ def _recent_activity(user, limit=10):
     for w in user.withdrawals.all()[:limit]:
         items.append({"type": "Retrait", "amount": w.amount, "currency": w.currency,
                       "status": w.get_status_display(), "status_key": w.status, "date": w.created_at})
+    for t in user.transfers_sent.all()[:limit]:
+        items.append({"type": "Envoi", "amount": t.amount, "currency": t.currency,
+                      "status": "Envoyé", "status_key": "completed", "date": t.created_at})
+    for t in user.transfers_received.all()[:limit]:
+        items.append({"type": "Reçu", "amount": t.amount, "currency": t.currency,
+                      "status": "Reçu", "status_key": "completed", "date": t.created_at})
     items.sort(key=lambda x: x["date"], reverse=True)
     return items[:limit]
 
@@ -123,14 +129,22 @@ def deposer(request):
             messages.error(request, msg)
             return render(request, "app/deposer.html", {"form": form, "active": "deposer"})
 
-        provider = Deposit.PROVIDER_PAYDUNYA if currency == XOF else Deposit.PROVIDER_PAYSTACK
+        if currency == XOF:
+            provider = (Deposit.PROVIDER_FEDAPAY
+                        if form.cleaned_data.get("xof_provider") == "fedapay"
+                        else Deposit.PROVIDER_PAYDUNYA)
+        else:
+            provider = Deposit.PROVIDER_PAYSTACK
         deposit = Deposit.objects.create(
             user=request.user, currency=currency, amount=amount, provider=provider,
             operator=form.cleaned_data.get("operator", ""),
             reference=services.make_reference("DEP"),
         )
         try:
-            if currency == XOF:
+            if provider == Deposit.PROVIDER_FEDAPAY:
+                url, token = fedapay.create_transaction(request, deposit)
+                deposit.provider_token = token
+            elif provider == Deposit.PROVIDER_PAYDUNYA:
                 url, token = paydunya.create_invoice(request, deposit)
                 deposit.provider_token = token
             else:
@@ -318,6 +332,74 @@ def _create_withdrawal(user, ben, amount, currency):
             reference=services.make_reference("RET"),
         )
     return wd
+
+
+# --------------------------------------------------------------------------- #
+# Transfert interne (compte à compte GoChange)
+# --------------------------------------------------------------------------- #
+@login_required
+def transferer(request):
+    from django.contrib.auth import get_user_model
+    from .forms import TransfertInterneForm
+    from .models import InternalTransfer
+
+    User = get_user_model()
+    if _email_required(request):
+        return redirect("exchange:dashboard")
+    wallet, _ = Wallet.objects.get_or_create(user=request.user)
+    form = TransfertInterneForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        ident = form.cleaned_data["recipient"]
+        currency = form.cleaned_data["currency"]
+        amount = form.cleaned_data["amount"]
+        note = form.cleaned_data["note"]
+
+        # Recherche du destinataire par code unique ou téléphone
+        recipient = (User.objects.filter(account_code__iexact=ident).first()
+                     or User.objects.filter(phone=ident).exclude(phone="").first())
+        if not recipient:
+            messages.error(request, "Aucun compte GoChange trouvé pour ce code ou ce numéro.")
+        elif recipient == request.user:
+            messages.error(request, "Vous ne pouvez pas vous transférer à vous-même.")
+        elif request.user.has_pin and not request.user.check_pin(request.POST.get("pin", "")):
+            messages.error(request, "Code PIN incorrect.")
+        elif not request.user.has_pin:
+            messages.warning(request, "Définissez d'abord un code PIN dans vos paramètres.")
+            return redirect("accounts:parametres")
+        else:
+            try:
+                tx = _execute_internal_transfer(request.user, recipient, currency, amount, note)
+            except ValueError as exc:
+                messages.error(request, str(exc))
+            else:
+                messages.success(
+                    request,
+                    f"Transfert de {tx.amount:,.0f} {tx.currency} envoyé à "
+                    f"{recipient.display_name} ({recipient.account_code}).",
+                )
+                return redirect("exchange:dashboard")
+
+    return render(request, "app/transferer.html", {
+        "form": form, "wallet": wallet, "active": "transferer",
+    })
+
+
+def _execute_internal_transfer(sender, recipient, currency, amount, note):
+    from .models import InternalTransfer
+
+    with transaction.atomic():
+        sw = Wallet.objects.select_for_update().get(user=sender)
+        rw = Wallet.objects.select_for_update().get(user=recipient)
+        if sw.balance(currency) < amount:
+            raise ValueError("Solde insuffisant pour ce transfert.")
+        sw.debit(currency, amount); sw.save()
+        rw.credit(currency, amount); rw.save()
+        tx = InternalTransfer.objects.create(
+            sender=sender, recipient=recipient, currency=currency,
+            amount=amount, note=note, reference=services.make_reference("TRF"),
+        )
+    return tx
 
 
 # --------------------------------------------------------------------------- #

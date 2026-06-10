@@ -8,7 +8,7 @@ from wallet.models import Beneficiary
 from .models import NGN, XOF
 
 INPUT = (
-    "w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] "
+    "gc-select w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] "
     "placeholder-gray-400 focus:border-primary focus:ring-1 focus:ring-primary "
     "focus:outline-none transition"
 )
@@ -19,6 +19,12 @@ class DepotForm(forms.Form):
         label="Devise à déposer",
         choices=[(XOF, "FCFA (XOF) — Mobile Money"), (NGN, "Naira (NGN) — Carte / virement")],
         widget=forms.Select(attrs={"class": INPUT, "x-model": "currency"}),
+    )
+    xof_provider = forms.ChoiceField(
+        label="Moyen de recharge (FCFA)",
+        required=False,
+        choices=[("paydunya", "PayDunya"), ("fedapay", "FedaPay")],
+        widget=forms.Select(attrs={"class": INPUT, "x-model": "provider"}),
     )
     operator = forms.ChoiceField(
         label="Opérateur Mobile Money",
@@ -74,6 +80,31 @@ class RetraitForm(forms.Form):
         super().__init__(*args, **kwargs)
         if user is not None:
             self.fields["beneficiary"].queryset = user.beneficiaries.all()
+
+
+class TransfertInterneForm(forms.Form):
+    """Envoi instantané vers un autre compte GoChange (code unique ou téléphone)."""
+
+    recipient = forms.CharField(
+        label="Code du destinataire ou numéro de téléphone",
+        widget=forms.TextInput(attrs={"class": INPUT, "placeholder": "GC-XXXXXX ou +229…"}),
+    )
+    currency = forms.ChoiceField(
+        label="Devise",
+        choices=[(XOF, "FCFA (XOF)"), (NGN, "Naira (NGN)")],
+        widget=forms.Select(attrs={"class": INPUT}),
+    )
+    amount = forms.DecimalField(
+        label="Montant", min_value=Decimal("100"), max_digits=16, decimal_places=2,
+        widget=forms.NumberInput(attrs={"class": INPUT, "placeholder": "0"}),
+    )
+    note = forms.CharField(
+        label="Note (optionnelle)", required=False, max_length=140,
+        widget=forms.TextInput(attrs={"class": INPUT, "placeholder": "Ex. Remboursement, loyer…"}),
+    )
+
+    def clean_recipient(self):
+        return (self.cleaned_data.get("recipient") or "").strip()
 
 
 class BeneficiaireMomoForm(forms.ModelForm):

@@ -97,3 +97,37 @@ def confidentialite(request):
 @require_GET
 def robots_txt(request):
     return TemplateResponse(request, "robots.txt", content_type="text/plain")
+
+
+@require_GET
+def service_worker(request):
+    """Service worker servi à la racine (scope /) pour la PWA."""
+    from django.http import HttpResponse
+
+    js = """
+const CACHE = 'gochange-v1';
+const ASSETS = ['/', '/dashboard/'];
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS).catch(() => {})));
+});
+self.addEventListener('activate', (e) => {
+  e.waitUntil(caches.keys().then((keys) =>
+    Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch', (e) => {
+  const req = e.request;
+  if (req.method !== 'GET') return;                 // jamais de cache pour POST
+  if (new URL(req.url).pathname.startsWith('/static/')) {
+    e.respondWith(caches.match(req).then((r) => r || fetch(req).then((res) => {
+      const copy = res.clone();
+      caches.open(CACHE).then((c) => c.put(req, copy));
+      return res;
+    }).catch(() => r)));
+  }
+});
+"""
+    resp = HttpResponse(js, content_type="application/javascript")
+    resp["Service-Worker-Allowed"] = "/"
+    return resp

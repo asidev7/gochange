@@ -3,20 +3,20 @@ from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin
 
 from . import emails
-from .models import CustomUser, DailyLimit, KYCDocument, KYCProfile
+from .models import CustomUser, DailyLimit, KYCDocument, KYCProfile, SiteSettings
 
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    list_display = ("email", "display_name", "country", "kyc_badge", "email_verified", "is_staff", "created_at")
+    list_display = ("email", "nom", "account_code", "country", "kyc_badge", "email_verified", "is_staff", "created_at")
     list_filter = ("country", "email_verified", "is_staff", "is_active")
-    search_fields = ("email", "first_name", "last_name", "phone")
+    search_fields = ("email", "first_name", "last_name", "phone", "account_code")
     ordering = ("-created_at",)
-    readonly_fields = ("created_at", "last_login")
+    readonly_fields = ("created_at", "last_login", "account_code")
 
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        ("Identité", {"fields": ("first_name", "last_name", "phone", "country")}),
+        ("Identité", {"fields": ("first_name", "last_name", "phone", "country", "account_code")}),
         ("Vérification", {"fields": ("email_verified", "phone_verified")}),
         ("Préférences", {"fields": ("language", "notify_email")}),
         ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
@@ -25,6 +25,10 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {"classes": ("wide",), "fields": ("email", "password1", "password2", "is_staff", "is_superuser")}),
     )
+
+    @admin.display(description="Nom")
+    def nom(self, obj):
+        return obj.display_name
 
     @admin.display(description="KYC")
     def kyc_badge(self, obj):
@@ -84,3 +88,15 @@ class KYCDocumentAdmin(admin.ModelAdmin):
 class DailyLimitAdmin(admin.ModelAdmin):
     list_display = ("level", "label", "deposit_xof_per_day", "withdraw_xof_per_day")
     list_editable = ("deposit_xof_per_day", "withdraw_xof_per_day")
+
+
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    list_display = ("brand_name", "primary_color", "support_phone", "updated_at")
+
+    def has_add_permission(self, request):
+        # Singleton : on édite l'unique enregistrement
+        return not SiteSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False

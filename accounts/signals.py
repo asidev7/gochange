@@ -12,3 +12,6 @@ def create_related_objects(sender, instance, created, **kwargs):
     if created:
         Wallet.objects.get_or_create(user=instance)
         KYCProfile.objects.get_or_create(user=instance)
+        if not instance.account_code:
+            instance.account_code = CustomUser.generate_account_code()
+            instance.save(update_fields=["account_code"])

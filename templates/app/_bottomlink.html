@@ -1,0 +1,5 @@
+<a href="{% url url %}"
+   class="flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium transition {% if a == key %}text-primary{% else %}text-gray-secondary{% endif %}">
+  {% include "app/_icon.html" with icon=icon cls="h-5 w-5" %}
+  <span>{{ label }}</span>
+</a>

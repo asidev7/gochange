@@ -194,26 +194,22 @@
   </div>
 </section>
 
-<!-- SERVICES -->
-<section id="services" class="border-b border-gray-200 bg-soft">
+<!-- SOLUTION -->
+<section id="solution" class="border-b border-gray-100 bg-soft">
   <div class="container-x py-16 md:py-24">
-    <div class="max-w-2xl">
-      <h2 class="text-3xl font-bold tracking-tight md:text-4xl">Nos services</h2>
-      <p class="mt-4 text-lg text-gray-secondary">Tout ce qu'il faut pour gérer votre argent entre le Bénin et le Nigeria.</p>
+    <div class="mx-auto max-w-2xl text-center">
+      <span class="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary">La solution GoChange</span>
+      <h2 class="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">Un seul compte, tout l'argent de votre vie transfrontalière</h2>
+      <p class="mt-4 text-lg text-gray-secondary">Recharger, échanger, envoyer, retirer — entre le Bénin et le Nigeria, en quelques secondes.</p>
     </div>
-    <div class="mt-12 grid gap-6 md:grid-cols-3">
-      <div class="rounded-xl border border-gray-200 bg-white p-6">
-        <h3 class="font-semibold">Change Naira ⇄ FCFA</h3>
-        <p class="mt-2 text-sm leading-relaxed text-gray-secondary">Convertissez dans les deux sens, au taux du jour, sans avoir à négocier avec qui que ce soit.</p>
-      </div>
-      <div class="rounded-xl border border-gray-200 bg-white p-6">
-        <h3 class="font-semibold">Paiements fournisseurs</h3>
-        <p class="mt-2 text-sm leading-relaxed text-gray-secondary">Payez vos fournisseurs à Lagos, Cotonou ou Parakou directement sur leur compte, sans intermédiaire.</p>
-      </div>
-      <div class="rounded-xl border border-gray-200 bg-white p-6">
-        <h3 class="font-semibold">Portefeuille multi-devises</h3>
-        <p class="mt-2 text-sm leading-relaxed text-gray-secondary">Gardez vos soldes en Naira et en FCFA au même endroit, et échangez quand le taux vous convient.</p>
-      </div>
+
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {% include "components/_solution_card.html" with icon="down" title="Rechargez en 1 clic" body="Ajoutez du FCFA via Mobile Money (MTN, Moov, Celtiis) avec PayDunya ou FedaPay, ou du Naira par carte et virement." %}
+      {% include "components/_solution_card.html" with icon="swap" title="Échangez au vrai taux" body="Naira ⇄ FCFA au taux du jour, frais affichés avant validation, taux figé à la seconde où vous confirmez." %}
+      {% include "components/_solution_card.html" with icon="bank" title="Envoyez vers une banque au Nigeria" body="Saisissez le compte, le nom du titulaire s'affiche, vous confirmez — et l'argent part chez GTBank, Opay, Kuda, Access…" %}
+      {% include "components/_solution_card.html" with icon="send" title="Transfert interne instantané" body="Chaque compte a un code unique et un numéro. Envoyez du FCFA ou du Naira à un autre membre GoChange, gratuitement, avec une note." %}
+      {% include "components/_solution_card.html" with icon="shield" title="Protégé par code PIN" body="Vos retraits et transferts sont confirmés par un code PIN secret. Le nom du bénéficiaire est toujours vérifié." %}
+      {% include "components/_solution_card.html" with icon="phone" title="Dans votre poche (PWA)" body="Installez GoChange sur votre téléphone comme une vraie app, et gérez tout depuis l'écran d'accueil." %}
     </div>
   </div>
 </section>

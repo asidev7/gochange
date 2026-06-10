@@ -1,0 +1,16 @@
+{
+  "name": "GoChange — Naira ⇄ FCFA",
+  "short_name": "GoChange",
+  "description": "Échangez vos Naira et FCFA au vrai taux du jour, sur Mobile Money ou compte bancaire.",
+  "start_url": "/dashboard/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0066FF",
+  "lang": "fr",
+  "icons": [
+    { "src": "/static/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

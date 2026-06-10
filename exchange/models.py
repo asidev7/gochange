@@ -60,7 +60,12 @@ class Deposit(models.Model):
 
     PROVIDER_PAYDUNYA = "paydunya"
     PROVIDER_PAYSTACK = "paystack"
-    PROVIDER_CHOICES = [(PROVIDER_PAYDUNYA, "PayDunya"), (PROVIDER_PAYSTACK, "Paystack")]
+    PROVIDER_FEDAPAY = "fedapay"
+    PROVIDER_CHOICES = [
+        (PROVIDER_PAYDUNYA, "PayDunya"),
+        (PROVIDER_FEDAPAY, "FedaPay"),
+        (PROVIDER_PAYSTACK, "Paystack"),
+    ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="deposits")
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
@@ -162,6 +167,26 @@ class Withdrawal(models.Model):
         if self.currency == NGN:
             return f"{self.account_name} — {self.bank_name} ({self.account_number})"
         return f"{self.get_operator_display() if self.operator else ''} {self.phone}".strip()
+
+
+class InternalTransfer(models.Model):
+    """Transfert interne instantané entre deux comptes GoChange (via code/téléphone)."""
+
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="transfers_sent")
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="transfers_received")
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    amount = models.DecimalField(max_digits=16, decimal_places=2)
+    note = models.CharField("note", max_length=140, blank=True)
+    reference = models.CharField(max_length=64, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "transfert interne"
+        verbose_name_plural = "transferts internes"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.sender} → {self.recipient} : {self.amount} {self.currency}"
 
 
 class WebhookLog(models.Model):

@@ -1,0 +1,69 @@
+{% extends "app/_app_base.html" %}
+{% load humanize %}
+{% block title %}Transférer — GoChange{% endblock %}
+
+{% block app_content %}
+<div class="mx-auto max-w-xl">
+  <h1 class="text-2xl font-bold tracking-tight">Transférer à un compte GoChange</h1>
+  <p class="mt-1 text-sm text-gray-secondary">Instantané et gratuit, vers n'importe quel compte GoChange via son code ou son numéro.</p>
+
+  {# Mon code à partager #}
+  <div class="mt-5 flex items-center justify-between rounded-2xl border border-primary/15 bg-primary-soft p-4"
+       x-data="{copied:false}">
+    <div>
+      <p class="text-xs font-medium text-gray-secondary">Mon code à partager</p>
+      <p class="font-display text-xl font-bold text-primary">{{ user.account_code }}</p>
+    </div>
+    <button @click="navigator.clipboard.writeText('{{ user.account_code }}'); copied=true; setTimeout(()=>copied=false,1500)"
+            class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary transition hover:bg-white/80">
+      <span x-show="!copied">Copier</span><span x-show="copied" x-cloak>Copié ✓</span>
+    </button>
+  </div>
+
+  <div class="mt-4 grid gap-3 sm:grid-cols-2">
+    <div class="rounded-lg border border-gray-200 px-4 py-3 text-sm"><span class="text-gray-secondary">Solde XOF :</span> <span class="font-semibold">{{ wallet.balance_xof|floatformat:0|intcomma }} FCFA</span></div>
+    <div class="rounded-lg border border-gray-200 px-4 py-3 text-sm"><span class="text-gray-secondary">Solde NGN :</span> <span class="font-semibold">{{ wallet.balance_ngn|floatformat:0|intcomma }} NGN</span></div>
+  </div>
+
+  <form method="post" class="mt-6 space-y-5 rounded-2xl border border-gray-200 p-6">
+    {% csrf_token %}
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">{{ form.recipient.label }}</label>
+      {{ form.recipient }}
+      {% for e in form.recipient.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium">{{ form.currency.label }}</label>
+        {{ form.currency }}
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium">{{ form.amount.label }}</label>
+        {{ form.amount }}
+        {% for e in form.amount.errors %}<p class="mt-1 text-sm text-red-600">{{ e }}</p>{% endfor %}
+      </div>
+    </div>
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">{{ form.note.label }}</label>
+      {{ form.note }}
+    </div>
+
+    {% if user.has_pin %}
+    <div>
+      <label class="mb-1.5 block text-sm font-medium">Code PIN de transaction</label>
+      <input type="password" name="pin" inputmode="numeric" maxlength="6" autocomplete="off" required
+             class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-center text-[15px] font-semibold tracking-[0.5em] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+             placeholder="••••">
+    </div>
+    {% else %}
+    <div class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+      Définissez d'abord un <a href="{% url 'accounts:parametres' %}" class="font-semibold underline">code PIN</a> pour transférer.
+    </div>
+    {% endif %}
+
+    <button type="submit" class="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark">
+      Envoyer le transfert
+    </button>
+  </form>
+</div>
+{% endblock %}

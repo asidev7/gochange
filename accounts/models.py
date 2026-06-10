@@ -48,6 +48,9 @@ class CustomUser(AbstractUser):
     email_verified = models.BooleanField(default=False)
     phone_verified = models.BooleanField(default=False)
 
+    # Identifiant unique du compte pour les transferts internes (ex. GC-7K2P9X)
+    account_code = models.CharField(max_length=12, unique=True, null=True, blank=True, db_index=True)
+
     # Code PIN de transaction (haché, jamais en clair)
     pin_hash = models.CharField(max_length=128, blank=True)
 
@@ -84,6 +87,15 @@ class CustomUser(AbstractUser):
     def has_pin(self):
         return bool(self.pin_hash)
 
+    @staticmethod
+    def generate_account_code():
+        import secrets
+        alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # sans caractères ambigus
+        while True:
+            code = "GC-" + "".join(secrets.choice(alphabet) for _ in range(6))
+            if not CustomUser.objects.filter(account_code=code).exists():
+                return code
+
     @property
     def display_name(self):
         full = self.get_full_name()
@@ -92,6 +104,36 @@ class CustomUser(AbstractUser):
     @property
     def kyc_level(self):
         return self.kyc.level if hasattr(self, "kyc") else 1
+
+
+class SiteSettings(models.Model):
+    """Réglages de marque modifiables depuis l'admin (logo, nom, couleurs)."""
+
+    brand_name = models.CharField(max_length=40, default="GoChange")
+    tagline = models.CharField(max_length=120, blank=True,
+                               default="Envoyez vos Naira, recevez du FCFA.")
+    # Logo téléversé par l'admin (sinon, le logo SVG par défaut est utilisé)
+    logo = models.ImageField(upload_to="branding/", blank=True, null=True)
+    primary_color = models.CharField(max_length=7, default="#0066FF",
+                                     help_text="Couleur principale (hex), ex. #0066FF")
+    support_phone = models.CharField(max_length=20, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "réglages du site"
+        verbose_name_plural = "réglages du site"
+
+    def __str__(self):
+        return f"Réglages — {self.brand_name}"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1  # singleton
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def current(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
 
 
 class KYCProfile(models.Model):

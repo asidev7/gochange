@@ -1,0 +1,15 @@
+<div class="gc-fade-up rounded-2xl border border-gray-100 bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
+  <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
+    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" aria-hidden="true">
+      {% if icon == 'down' %}<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m0 0 6.75-6.75M12 19.5l-6.75-6.75"/>
+      {% elif icon == 'swap' %}<path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/>
+      {% elif icon == 'send' %}<path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.27 3.27a.75.75 0 0 1 .98-.98l16.5 8.25a.75.75 0 0 1 0 1.32L4.25 21.71a.75.75 0 0 1-.98-.98L6 12zm0 0h6"/>
+      {% elif icon == 'bank' %}<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 10.5h15M5.25 10.5V21m4.5-10.5V21m4.5-10.5V21m4.5-10.5V21M3.75 9 12 3.75 20.25 9"/>
+      {% elif icon == 'shield' %}<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 5.25-4.5 8.25-9 9.75C7.5 20.25 3 17.25 3 12V6.75l9-3 9 3V12z"/>
+      {% elif icon == 'phone' %}<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5A2.25 2.25 0 0 0 8.25 22.5h7.5A2.25 2.25 0 0 0 18 20.25V3.75A2.25 2.25 0 0 0 15.75 1.5H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/>
+      {% endif %}
+    </svg>
+  </span>
+  <h3 class="mt-4 font-semibold">{{ title }}</h3>
+  <p class="mt-1.5 text-sm leading-relaxed text-gray-secondary">{{ body }}</p>
+</div>

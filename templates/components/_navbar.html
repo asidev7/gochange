@@ -3,15 +3,19 @@
         x-data="{open:false}">
   <div class="container-x flex h-16 items-center justify-between">
     <a href="{% url 'core:landing' %}" class="flex items-center">
-      {# Logo SVG — remplaçable par votre propre fichier static/img/logo.svg #}
-      <img src="{% static 'img/logo.svg' %}" alt="GoChange" class="h-8 w-auto">
+      {# Logo : celui de l'admin s'il existe, sinon le SVG par défaut #}
+      {% if BRAND_LOGO_URL %}
+        <img src="{{ BRAND_LOGO_URL }}" alt="{{ SITE_NAME }}" class="h-8 w-auto">
+      {% else %}
+        <img src="{% static 'img/logo.svg' %}" alt="{{ SITE_NAME }}" class="h-8 w-auto">
+      {% endif %}
     </a>
 
     <nav class="hidden items-center gap-1 rounded-full border border-gray-100 bg-soft/60 px-2 py-1 md:flex">
+      <a href="{% url 'core:landing' %}" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">Accueil</a>
+      <a href="{% url 'core:landing' %}#solution" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">Solution</a>
       <a href="{% url 'core:landing' %}#comment" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">Comment ça marche</a>
-      <a href="{% url 'core:taux' %}" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">Taux du jour</a>
-      <a href="{% url 'core:landing' %}#pourquoi" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">Pourquoi nous</a>
-      <a href="{% url 'core:faq' %}" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">FAQ</a>
+      <a href="{% url 'core:taux' %}" class="rounded-full px-4 py-1.5 text-sm font-medium text-gray-secondary transition hover:bg-white hover:text-ink">Taux</a>
     </nav>
 
     <div class="hidden items-center gap-2 md:flex">
@@ -36,10 +40,11 @@
   {# Menu mobile #}
   <div x-show="open" x-cloak class="border-t border-gray-100 md:hidden">
     <div class="container-x flex flex-col gap-1 py-3">
+      <a href="{% url 'core:landing' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">Accueil</a>
+      <a href="{% url 'core:landing' %}#solution" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">Solution</a>
       <a href="{% url 'core:landing' %}#comment" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">Comment ça marche</a>
-      <a href="{% url 'core:taux' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">Taux du jour</a>
+      <a href="{% url 'core:taux' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">Taux</a>
       <a href="{% url 'core:faq' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">FAQ</a>
-      <a href="{% url 'core:contact' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-secondary hover:bg-soft">Contact</a>
       <div class="mt-2 flex flex-col gap-2 border-t border-gray-100 pt-3">
         {% if user.is_authenticated %}
           <a href="{% url 'exchange:dashboard' %}" class="rounded-full bg-primary px-4 py-2 text-center text-sm font-semibold text-white">Mon espace</a>

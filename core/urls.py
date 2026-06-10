@@ -14,4 +14,5 @@ urlpatterns = [
     path("cgu/", views.cgu, name="cgu"),
     path("confidentialite/", views.confidentialite, name="confidentialite"),
     path("robots.txt", views.robots_txt, name="robots"),
+    path("sw.js", views.service_worker, name="service_worker"),
 ]

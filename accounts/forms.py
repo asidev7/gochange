@@ -6,7 +6,7 @@ from django.contrib.auth.forms import SetPasswordForm  # noqa: F401 (réutilisé
 from .models import CustomUser, KYCDocument
 
 INPUT = (
-    "w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] "
+    "gc-select w-full rounded-lg border border-gray-300 px-4 py-2.5 text-[15px] "
     "placeholder-gray-400 focus:border-primary focus:ring-1 focus:ring-primary "
     "focus:outline-none transition"
 )
